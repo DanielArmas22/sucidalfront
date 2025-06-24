@@ -1,19 +1,25 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { useAuth } from '@/contexts/AuthContext'
-import { mockApi } from '@/lib/mock-data'
-import { DiaryEntry, MoodType, MOOD_TYPES } from '@/types'
-import { formatDate, formatRelativeTime, cn } from '@/lib/utils'
-import { 
-  BookOpen, 
-  Plus, 
-  Search, 
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/contexts/AuthContext";
+import { mockApi } from "@/lib/mock-data";
+import { DiaryEntry, MoodType, MOOD_TYPES } from "@/types";
+import { formatDate, formatRelativeTime, cn } from "@/lib/utils";
+import {
+  BookOpen,
+  Plus,
+  Search,
   Calendar,
   Heart,
   Smile,
@@ -23,42 +29,44 @@ import {
   Lock,
   TrendingUp,
   Eye,
-  Save
-} from 'lucide-react'
+  Save,
+} from "lucide-react";
 
 export default function StudentDiaryPage() {
-  const { user } = useAuth()
-  const [entries, setEntries] = useState<DiaryEntry[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [showCreateEntry, setShowCreateEntry] = useState(false)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedMood, setSelectedMood] = useState<MoodType | 'all'>('all')
+  const { user } = useAuth();
+  const [entries, setEntries] = useState<DiaryEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showCreateEntry, setShowCreateEntry] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedMood, setSelectedMood] = useState<MoodType | "all">("all");
   const [newEntry, setNewEntry] = useState({
-    title: '',
-    content: '',
-    mood: 'neutral' as MoodType
-  })
+    title: "",
+    content: "",
+    mood: "neutral" as MoodType,
+  });
 
   useEffect(() => {
-    loadEntries()
-  }, [])
+    loadEntries();
+  }, []);
 
   const loadEntries = async () => {
-    if (!user) return
-    
+    if (!user) return;
+
     try {
-      const data = await mockApi.getDiaryEntries(user.id)
-      setEntries(data.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()))
+      const data = await mockApi.getDiaryEntries(user.id);
+      setEntries(
+        data.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+      );
     } catch (error) {
-      console.error('Error loading diary entries:', error)
+      console.error("Error loading diary entries:", error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleCreateEntry = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!user) return
+    e.preventDefault();
+    if (!user) return;
 
     try {
       await mockApi.createDiaryEntry({
@@ -66,47 +74,48 @@ export default function StudentDiaryPage() {
         title: newEntry.title,
         content: newEntry.content,
         mood: newEntry.mood,
-        isPrivate: true
-      })
-      
+        isPrivate: true,
+      });
+
       setNewEntry({
-        title: '',
-        content: '',
-        mood: 'neutral'
-      })
-      setShowCreateEntry(false)
-      loadEntries()
+        title: "",
+        content: "",
+        mood: "neutral",
+      });
+      setShowCreateEntry(false);
+      loadEntries();
     } catch (error) {
-      console.error('Error creating diary entry:', error)
+      console.error("Error creating diary entry:", error);
     }
-  }
+  };
 
-  const filteredEntries = entries.filter(entry => {
-    const matchesSearch = entry.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         entry.content.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesMood = selectedMood === 'all' || entry.mood === selectedMood
-    return matchesSearch && matchesMood
-  })
+  const filteredEntries = entries.filter((entry) => {
+    const matchesSearch =
+      entry.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      entry.content.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesMood = selectedMood === "all" || entry.mood === selectedMood;
+    return matchesSearch && matchesMood;
+  });
 
-  const moodStats = MOOD_TYPES.map(mood => ({
+  const moodStats = MOOD_TYPES.map((mood) => ({
     ...mood,
-    count: entries.filter(e => e.mood === mood.value).length
-  }))
+    count: entries.filter((e) => e.mood === mood.value).length,
+  }));
 
   const getMoodIcon = (mood: MoodType) => {
     switch (mood) {
-      case 'muy-bien':
-      case 'bien':
-        return <Smile className="h-4 w-4" />
-      case 'neutral':
-        return <Meh className="h-4 w-4" />
-      case 'mal':
-      case 'muy-mal':
-        return <Frown className="h-4 w-4" />
+      case "muy-bien":
+      case "bien":
+        return <Smile className="h-4 w-4" />;
+      case "neutral":
+        return <Meh className="h-4 w-4" />;
+      case "mal":
+      case "muy-mal":
+        return <Frown className="h-4 w-4" />;
       default:
-        return <Meh className="h-4 w-4" />
+        return <Meh className="h-4 w-4" />;
     }
-  }
+  };
 
   if (isLoading) {
     return (
@@ -123,7 +132,7 @@ export default function StudentDiaryPage() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -139,7 +148,8 @@ export default function StudentDiaryPage() {
               </h1>
               <p className="text-gray-600 mt-1 flex items-center gap-2">
                 <Lock className="h-4 w-4" />
-                Espacio completamente privado para tus pensamientos y reflexiones
+                Espacio completamente privado para tus pensamientos y
+                reflexiones
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -179,23 +189,25 @@ export default function StudentDiaryPage() {
                     className="pl-10"
                   />
                 </div>
-                
+
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-2 block">
                     Estado de ánimo
                   </label>
                   <div className="space-y-2">
                     <button
-                      onClick={() => setSelectedMood('all')}
+                      onClick={() => setSelectedMood("all")}
                       className={cn(
                         "w-full text-left px-3 py-2 rounded-lg text-sm transition-colors",
-                        selectedMood === 'all'
+                        selectedMood === "all"
                           ? "bg-blue-100 text-blue-700 border border-blue-200"
                           : "hover:bg-gray-100"
                       )}
                     >
                       Todos los estados
-                      <span className="float-right text-gray-500">{entries.length}</span>
+                      <span className="float-right text-gray-500">
+                        {entries.length}
+                      </span>
                     </button>
                     {moodStats.map((mood) => (
                       <button
@@ -208,9 +220,13 @@ export default function StudentDiaryPage() {
                             : "hover:bg-gray-100"
                         )}
                       >
-                        <div className={cn("w-3 h-3 rounded-full", mood.color)}></div>
+                        <div
+                          className={cn("w-3 h-3 rounded-full", mood.color)}
+                        ></div>
                         {mood.label}
-                        <span className="ml-auto text-gray-500">{mood.count}</span>
+                        <span className="ml-auto text-gray-500">
+                          {mood.count}
+                        </span>
                       </button>
                     ))}
                   </div>
@@ -230,24 +246,35 @@ export default function StudentDiaryPage() {
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Esta semana</span>
-                    <span className="font-medium">{entries.filter(e => {
-                      const weekAgo = new Date()
-                      weekAgo.setDate(weekAgo.getDate() - 7)
-                      return e.createdAt >= weekAgo
-                    }).length} entradas</span>
+                    <span className="font-medium">
+                      {
+                        entries.filter((e) => {
+                          const weekAgo = new Date();
+                          weekAgo.setDate(weekAgo.getDate() - 7);
+                          return e.createdAt >= weekAgo;
+                        }).length
+                      }{" "}
+                      entradas
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Este mes</span>
-                    <span className="font-medium">{entries.filter(e => {
-                      const monthAgo = new Date()
-                      monthAgo.setMonth(monthAgo.getMonth() - 1)
-                      return e.createdAt >= monthAgo
-                    }).length} entradas</span>
+                    <span className="font-medium">
+                      {
+                        entries.filter((e) => {
+                          const monthAgo = new Date();
+                          monthAgo.setMonth(monthAgo.getMonth() - 1);
+                          return e.createdAt >= monthAgo;
+                        }).length
+                      }{" "}
+                      entradas
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Promedio semanal</span>
                     <span className="font-medium">
-                      {entries.length > 0 ? Math.round(entries.length / 4) : 0} entradas
+                      {entries.length > 0 ? Math.round(entries.length / 4) : 0}{" "}
+                      entradas
                     </span>
                   </div>
                 </div>
@@ -262,7 +289,8 @@ export default function StudentDiaryPage() {
                   <span className="font-medium">Recordatorio</span>
                 </div>
                 <p className="text-sm text-blue-700 leading-relaxed">
-                  Escribir sobre tus emociones puede ayudarte a procesarlas mejor. No hay respuestas correctas o incorrectas aquí.
+                  Escribir sobre tus emociones puede ayudarte a procesarlas
+                  mejor. No hay respuestas correctas o incorrectas aquí.
                 </p>
               </CardContent>
             </Card>
@@ -276,7 +304,8 @@ export default function StudentDiaryPage() {
                 <CardHeader>
                   <CardTitle className="text-blue-700">Nueva Entrada</CardTitle>
                   <CardDescription>
-                    Este es tu espacio privado. Escribe libremente sobre tus pensamientos y emociones.
+                    Este es tu espacio privado. Escribe libremente sobre tus
+                    pensamientos y emociones.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -288,10 +317,12 @@ export default function StudentDiaryPage() {
                       <Input
                         placeholder="¿Cómo resumirías tu día/momento?"
                         value={newEntry.title}
-                        onChange={(e) => setNewEntry({ ...newEntry, title: e.target.value })}
+                        onChange={(e) =>
+                          setNewEntry({ ...newEntry, title: e.target.value })
+                        }
                       />
                     </div>
-                    
+
                     <div>
                       <label className="text-sm font-medium text-gray-700 mb-2 block">
                         ¿Cómo te sientes?
@@ -301,7 +332,9 @@ export default function StudentDiaryPage() {
                           <button
                             key={mood.value}
                             type="button"
-                            onClick={() => setNewEntry({ ...newEntry, mood: mood.value })}
+                            onClick={() =>
+                              setNewEntry({ ...newEntry, mood: mood.value })
+                            }
                             className={cn(
                               "flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors",
                               newEntry.mood === mood.value
@@ -309,7 +342,9 @@ export default function StudentDiaryPage() {
                                 : "border-gray-300 hover:bg-gray-50"
                             )}
                           >
-                            <div className={cn("w-3 h-3 rounded-full", mood.color)}></div>
+                            <div
+                              className={cn("w-3 h-3 rounded-full", mood.color)}
+                            ></div>
                             <span className="text-sm">{mood.label}</span>
                           </button>
                         ))}
@@ -323,7 +358,9 @@ export default function StudentDiaryPage() {
                       <Textarea
                         placeholder="Escribe sobre lo que sientes, piensas o has experimentado. No hay límites ni juicios aquí."
                         value={newEntry.content}
-                        onChange={(e) => setNewEntry({ ...newEntry, content: e.target.value })}
+                        onChange={(e) =>
+                          setNewEntry({ ...newEntry, content: e.target.value })
+                        }
                         className="min-h-[150px]"
                         required
                       />
@@ -357,22 +394,26 @@ export default function StudentDiaryPage() {
                   <CardContent>
                     <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                     <h3 className="text-lg font-medium text-gray-900 mb-2">
-                      {searchTerm || selectedMood !== 'all' ? 'No se encontraron entradas' : 'Comienza tu diario'}
+                      {searchTerm || selectedMood !== "all"
+                        ? "No se encontraron entradas"
+                        : "Comienza tu diario"}
                     </h3>
                     <p className="text-gray-600 mb-4">
-                      {searchTerm || selectedMood !== 'all' 
-                        ? 'Intenta con otros términos de búsqueda'
-                        : 'Escribe tu primera entrada y comienza a reflexionar sobre tus experiencias'}
+                      {searchTerm || selectedMood !== "all"
+                        ? "Intenta con otros términos de búsqueda"
+                        : "Escribe tu primera entrada y comienza a reflexionar sobre tus experiencias"}
                     </p>
-                    {!showCreateEntry && !searchTerm && selectedMood === 'all' && (
-                      <Button
-                        onClick={() => setShowCreateEntry(true)}
-                        className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Crear Primera Entrada
-                      </Button>
-                    )}
+                    {!showCreateEntry &&
+                      !searchTerm &&
+                      selectedMood === "all" && (
+                        <Button
+                          onClick={() => setShowCreateEntry(true)}
+                          className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                        >
+                          <Plus className="h-4 w-4 mr-2" />
+                          Crear Primera Entrada
+                        </Button>
+                      )}
                   </CardContent>
                 </Card>
               ) : (
@@ -385,14 +426,14 @@ export default function StudentDiaryPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function DiaryEntryCard({ entry }: { entry: DiaryEntry }) {
-  const [isExpanded, setIsExpanded] = useState(false)
-  const mood = MOOD_TYPES.find(m => m.value === entry.mood)
-  const contentPreview = entry.content.slice(0, 200)
-  const showReadMore = entry.content.length > 200
+  const [isExpanded, setIsExpanded] = useState(false);
+  const mood = MOOD_TYPES.find((m) => m.value === entry.mood);
+  const contentPreview = entry.content.slice(0, 200);
+  const showReadMore = entry.content.length > 200;
 
   return (
     <Card className="hover:shadow-md transition-shadow bg-white">
@@ -402,13 +443,17 @@ function DiaryEntryCard({ entry }: { entry: DiaryEntry }) {
             <div className="flex items-center gap-3 mb-2">
               <div className="flex items-center gap-2">
                 <Calendar className="h-4 w-4 text-gray-500" />
-                <span className="text-sm text-gray-600">{formatDate(entry.createdAt)}</span>
+                <span className="text-sm text-gray-600">
+                  {formatDate(entry.createdAt)}
+                </span>
                 <span className="text-xs text-gray-400">•</span>
-                <span className="text-xs text-gray-500">{formatRelativeTime(entry.createdAt)}</span>
+                <span className="text-xs text-gray-500">
+                  {formatRelativeTime(entry.createdAt)}
+                </span>
               </div>
               {mood && (
-                <Badge 
-                  variant="outline" 
+                <Badge
+                  variant="outline"
                   className="text-xs flex items-center gap-1"
                 >
                   <div className={cn("w-2 h-2 rounded-full", mood.color)}></div>
@@ -417,7 +462,9 @@ function DiaryEntryCard({ entry }: { entry: DiaryEntry }) {
               )}
             </div>
             {entry.title && (
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">{entry.title}</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                {entry.title}
+              </h3>
             )}
           </div>
           <div className="flex items-center gap-2 text-xs text-gray-500">
@@ -430,20 +477,20 @@ function DiaryEntryCard({ entry }: { entry: DiaryEntry }) {
         <div className="prose prose-sm max-w-none">
           <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
             {isExpanded ? entry.content : contentPreview}
-            {showReadMore && !isExpanded && '...'}
+            {showReadMore && !isExpanded && "..."}
           </p>
-          
+
           {showReadMore && (
             <button
               onClick={() => setIsExpanded(!isExpanded)}
               className="text-blue-600 hover:text-blue-800 text-sm mt-2 flex items-center gap-1"
             >
               <Eye className="h-3 w-3" />
-              {isExpanded ? 'Ver menos' : 'Leer más'}
+              {isExpanded ? "Ver menos" : "Leer más"}
             </button>
           )}
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

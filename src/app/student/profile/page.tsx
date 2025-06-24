@@ -1,16 +1,22 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { useAuth } from '@/contexts/AuthContext'
-import { cn } from '@/lib/utils'
-import { 
-  User, 
-  Mail, 
-  GraduationCap, 
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/contexts/AuthContext";
+import { cn } from "@/lib/utils";
+import {
+  User,
+  Mail,
+  GraduationCap,
   Calendar,
   Settings,
   Shield,
@@ -23,58 +29,58 @@ import {
   Heart,
   TrendingUp,
   Award,
-  Clock
-} from 'lucide-react'
+  Clock,
+} from "lucide-react";
 
 export default function StudentProfilePage() {
-  const { user, logout } = useAuth()
-  const [isEditing, setIsEditing] = useState(false)
-  const [showAnonymousPreference, setShowAnonymousPreference] = useState(false)
+  const { user, logout } = useAuth();
+  const [isEditing, setIsEditing] = useState(false);
+  const [showAnonymousPreference, setShowAnonymousPreference] = useState(false);
   const [profileData, setProfileData] = useState({
-    name: user?.name || '',
-    email: user?.email || '',
-    faculty: user?.faculty || '',
+    name: user?.name || "",
+    email: user?.email || "",
+    faculty: user?.faculty || "",
     semester: user?.semester || 1,
     anonymousMode: false,
     notificationsEnabled: true,
-    shareProgress: false
-  })
+    shareProgress: false,
+  });
 
   const handleSave = () => {
     // Aquí se guardarían los cambios
-    setIsEditing(false)
+    setIsEditing(false);
     // Simular guardado exitoso
-    console.log('Profile updated:', profileData)
-  }
+    console.log("Profile updated:", profileData);
+  };
 
   const stats = {
     postsCreated: 12,
     diaryEntries: 28,
     resourcesViewed: 15,
     daysActive: 45,
-    supportGiven: 8 // reacciones positivas dadas
-  }
+    supportGiven: 8, // reacciones positivas dadas
+  };
 
   const recentActivity = [
     {
-      type: 'diary',
-      title: 'Nueva entrada en el diario',
-      date: new Date('2024-06-23T20:30:00'),
-      description: 'Reflexiones sobre el progreso académico'
+      type: "diary",
+      title: "Nueva entrada en el diario",
+      date: new Date("2024-06-23T20:30:00"),
+      description: "Reflexiones sobre el progreso académico",
     },
     {
-      type: 'post',
-      title: 'Participación en el foro',
-      date: new Date('2024-06-22T15:45:00'),
-      description: 'Compartiste consejos sobre manejo del estrés'
+      type: "post",
+      title: "Participación en el foro",
+      date: new Date("2024-06-22T15:45:00"),
+      description: "Compartiste consejos sobre manejo del estrés",
     },
     {
-      type: 'resource',
-      title: 'Recurso consultado',
-      date: new Date('2024-06-21T10:20:00'),
-      description: 'Técnicas de respiración para la ansiedad'
-    }
-  ]
+      type: "resource",
+      title: "Recurso consultado",
+      date: new Date("2024-06-21T10:20:00"),
+      description: "Técnicas de respiración para la ansiedad",
+    },
+  ];
 
   if (!user) {
     return (
@@ -83,7 +89,7 @@ export default function StudentProfilePage() {
           <p className="text-gray-600">Cargando perfil...</p>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -98,7 +104,9 @@ export default function StudentProfilePage() {
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-gray-900">Mi Perfil</h1>
-                <p className="text-gray-600">Gestiona tu información y preferencias</p>
+                <p className="text-gray-600">
+                  Gestiona tu información y preferencias
+                </p>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -108,7 +116,7 @@ export default function StudentProfilePage() {
                 className="flex items-center gap-2"
               >
                 <Edit3 className="h-4 w-4" />
-                {isEditing ? 'Cancelar' : 'Editar Perfil'}
+                {isEditing ? "Cancelar" : "Editar Perfil"}
               </Button>
               {isEditing && (
                 <Button
@@ -145,7 +153,12 @@ export default function StudentProfilePage() {
                     {isEditing ? (
                       <Input
                         value={profileData.name}
-                        onChange={(e) => setProfileData({ ...profileData, name: e.target.value })}
+                        onChange={(e) =>
+                          setProfileData({
+                            ...profileData,
+                            name: e.target.value,
+                          })
+                        }
                         placeholder="Tu nombre completo"
                       />
                     ) : (
@@ -163,7 +176,9 @@ export default function StudentProfilePage() {
                     <div className="flex items-center gap-2 p-2 bg-gray-50 rounded-md">
                       <Mail className="h-4 w-4 text-gray-500" />
                       <span>{profileData.email}</span>
-                      <Badge variant="secondary" className="text-xs">Verificado</Badge>
+                      <Badge variant="secondary" className="text-xs">
+                        Verificado
+                      </Badge>
                     </div>
                   </div>
 
@@ -174,13 +189,26 @@ export default function StudentProfilePage() {
                     {isEditing ? (
                       <select
                         value={profileData.faculty}
-                        onChange={(e) => setProfileData({ ...profileData, faculty: e.target.value })}
+                        onChange={(e) =>
+                          setProfileData({
+                            ...profileData,
+                            faculty: e.target.value,
+                          })
+                        }
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       >
-                        <option value="Ingeniería de Sistemas">Ingeniería de Sistemas</option>
-                        <option value="Ingeniería Industrial">Ingeniería Industrial</option>
-                        <option value="Ingeniería Civil">Ingeniería Civil</option>
-                        <option value="Ingeniería Electrónica">Ingeniería Electrónica</option>
+                        <option value="Ingeniería de Sistemas">
+                          Ingeniería de Sistemas
+                        </option>
+                        <option value="Ingeniería Industrial">
+                          Ingeniería Industrial
+                        </option>
+                        <option value="Ingeniería Civil">
+                          Ingeniería Civil
+                        </option>
+                        <option value="Ingeniería Electrónica">
+                          Ingeniería Electrónica
+                        </option>
                       </select>
                     ) : (
                       <div className="flex items-center gap-2 p-2 bg-gray-50 rounded-md">
@@ -197,7 +225,12 @@ export default function StudentProfilePage() {
                     {isEditing ? (
                       <select
                         value={profileData.semester}
-                        onChange={(e) => setProfileData({ ...profileData, semester: parseInt(e.target.value) })}
+                        onChange={(e) =>
+                          setProfileData({
+                            ...profileData,
+                            semester: parseInt(e.target.value),
+                          })
+                        }
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       >
                         {[...Array(10)].map((_, i) => (
@@ -225,7 +258,8 @@ export default function StudentProfilePage() {
                   Privacidad y Preferencias
                 </CardTitle>
                 <CardDescription>
-                  Controla cómo compartes tu información y interactúas en la plataforma
+                  Controla cómo compartes tu información y interactúas en la
+                  plataforma
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -233,8 +267,14 @@ export default function StudentProfilePage() {
                   <label className="flex items-center justify-between cursor-pointer">
                     <div className="flex items-center gap-3">
                       <div className="flex items-center gap-2">
-                        {profileData.anonymousMode ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                        <span className="font-medium">Modo anónimo por defecto</span>
+                        {profileData.anonymousMode ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
+                        <span className="font-medium">
+                          Modo anónimo por defecto
+                        </span>
                       </div>
                       <div className="text-sm text-gray-600">
                         Tus publicaciones serán anónimas automáticamente
@@ -243,7 +283,12 @@ export default function StudentProfilePage() {
                     <input
                       type="checkbox"
                       checked={profileData.anonymousMode}
-                      onChange={(e) => setProfileData({ ...profileData, anonymousMode: e.target.checked })}
+                      onChange={(e) =>
+                        setProfileData({
+                          ...profileData,
+                          anonymousMode: e.target.checked,
+                        })
+                      }
                       className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                       disabled={!isEditing}
                     />
@@ -253,16 +298,24 @@ export default function StudentProfilePage() {
                     <div className="flex items-center gap-3">
                       <div className="flex items-center gap-2">
                         <Settings className="h-4 w-4" />
-                        <span className="font-medium">Notificaciones habilitadas</span>
+                        <span className="font-medium">
+                          Notificaciones habilitadas
+                        </span>
                       </div>
                       <div className="text-sm text-gray-600">
-                        Recibir notificaciones sobre recursos y mensajes de apoyo
+                        Recibir notificaciones sobre recursos y mensajes de
+                        apoyo
                       </div>
                     </div>
                     <input
                       type="checkbox"
                       checked={profileData.notificationsEnabled}
-                      onChange={(e) => setProfileData({ ...profileData, notificationsEnabled: e.target.checked })}
+                      onChange={(e) =>
+                        setProfileData({
+                          ...profileData,
+                          notificationsEnabled: e.target.checked,
+                        })
+                      }
                       className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                       disabled={!isEditing}
                     />
@@ -272,16 +325,24 @@ export default function StudentProfilePage() {
                     <div className="flex items-center gap-3">
                       <div className="flex items-center gap-2">
                         <TrendingUp className="h-4 w-4" />
-                        <span className="font-medium">Compartir progreso general</span>
+                        <span className="font-medium">
+                          Compartir progreso general
+                        </span>
                       </div>
                       <div className="text-sm text-gray-600">
-                        Permitir que tus estadísticas contribuyan a insights generales (anónimo)
+                        Permitir que tus estadísticas contribuyan a insights
+                        generales (anónimo)
                       </div>
                     </div>
                     <input
                       type="checkbox"
                       checked={profileData.shareProgress}
-                      onChange={(e) => setProfileData({ ...profileData, shareProgress: e.target.checked })}
+                      onChange={(e) =>
+                        setProfileData({
+                          ...profileData,
+                          shareProgress: e.target.checked,
+                        })
+                      }
                       className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                       disabled={!isEditing}
                     />
@@ -291,11 +352,14 @@ export default function StudentProfilePage() {
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4">
                   <div className="flex items-center gap-2 text-blue-700 mb-2">
                     <Shield className="h-4 w-4" />
-                    <span className="font-medium">Tu privacidad es importante</span>
+                    <span className="font-medium">
+                      Tu privacidad es importante
+                    </span>
                   </div>
                   <p className="text-sm text-blue-600 leading-relaxed">
-                    Toda tu información personal se mantiene segura y confidencial. Solo el equipo de bienestar 
-                    autorizado puede acceder a ella cuando sea necesario para tu apoyo.
+                    Toda tu información personal se mantiene segura y
+                    confidencial. Solo el equipo de bienestar autorizado puede
+                    acceder a ella cuando sea necesario para tu apoyo.
                   </p>
                 </div>
               </CardContent>
@@ -320,7 +384,9 @@ export default function StudentProfilePage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <MessageCircle className="h-4 w-4 text-blue-600" />
-                      <span className="text-sm text-gray-600">Publicaciones</span>
+                      <span className="text-sm text-gray-600">
+                        Publicaciones
+                      </span>
                     </div>
                     <span className="font-semibold">{stats.postsCreated}</span>
                   </div>
@@ -328,7 +394,9 @@ export default function StudentProfilePage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <BookOpen className="h-4 w-4 text-purple-600" />
-                      <span className="text-sm text-gray-600">Entradas diario</span>
+                      <span className="text-sm text-gray-600">
+                        Entradas diario
+                      </span>
                     </div>
                     <span className="font-semibold">{stats.diaryEntries}</span>
                   </div>
@@ -336,9 +404,13 @@ export default function StudentProfilePage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Heart className="h-4 w-4 text-green-600" />
-                      <span className="text-sm text-gray-600">Recursos vistos</span>
+                      <span className="text-sm text-gray-600">
+                        Recursos vistos
+                      </span>
                     </div>
-                    <span className="font-semibold">{stats.resourcesViewed}</span>
+                    <span className="font-semibold">
+                      {stats.resourcesViewed}
+                    </span>
                   </div>
 
                   <div className="flex items-center justify-between">
@@ -352,7 +424,9 @@ export default function StudentProfilePage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <Award className="h-4 w-4 text-yellow-600" />
-                      <span className="text-sm text-gray-600">Apoyo brindado</span>
+                      <span className="text-sm text-gray-600">
+                        Apoyo brindado
+                      </span>
                     </div>
                     <span className="font-semibold">{stats.supportGiven}</span>
                   </div>
@@ -372,25 +446,37 @@ export default function StudentProfilePage() {
                 <div className="space-y-4">
                   {recentActivity.map((activity, index) => (
                     <div key={index} className="flex items-start gap-3">
-                      <div className={cn(
-                        "h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0",
-                        activity.type === 'diary' && "bg-purple-100",
-                        activity.type === 'post' && "bg-blue-100",
-                        activity.type === 'resource' && "bg-green-100"
-                      )}>
-                        {activity.type === 'diary' && <BookOpen className="h-4 w-4 text-purple-600" />}
-                        {activity.type === 'post' && <MessageCircle className="h-4 w-4 text-blue-600" />}
-                        {activity.type === 'resource' && <Heart className="h-4 w-4 text-green-600" />}
+                      <div
+                        className={cn(
+                          "h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0",
+                          activity.type === "diary" && "bg-purple-100",
+                          activity.type === "post" && "bg-blue-100",
+                          activity.type === "resource" && "bg-green-100"
+                        )}
+                      >
+                        {activity.type === "diary" && (
+                          <BookOpen className="h-4 w-4 text-purple-600" />
+                        )}
+                        {activity.type === "post" && (
+                          <MessageCircle className="h-4 w-4 text-blue-600" />
+                        )}
+                        {activity.type === "resource" && (
+                          <Heart className="h-4 w-4 text-green-600" />
+                        )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-900">{activity.title}</p>
-                        <p className="text-xs text-gray-600 mt-1">{activity.description}</p>
+                        <p className="text-sm font-medium text-gray-900">
+                          {activity.title}
+                        </p>
+                        <p className="text-xs text-gray-600 mt-1">
+                          {activity.description}
+                        </p>
                         <p className="text-xs text-gray-500 mt-1">
-                          {activity.date.toLocaleDateString('es-ES', {
-                            day: 'numeric',
-                            month: 'short',
-                            hour: '2-digit',
-                            minute: '2-digit'
+                          {activity.date.toLocaleDateString("es-ES", {
+                            day: "numeric",
+                            month: "short",
+                            hour: "2-digit",
+                            minute: "2-digit",
                           })}
                         </p>
                       </div>
@@ -417,8 +503,8 @@ export default function StudentProfilePage() {
                   <Shield className="h-4 w-4 mr-2" />
                   Descargar mis datos
                 </Button>
-                <Button 
-                  variant="destructive" 
+                <Button
+                  variant="destructive"
                   className="w-full justify-start"
                   onClick={logout}
                 >
@@ -440,8 +526,9 @@ export default function StudentProfilePage() {
                   Recuerda cuidar tu bienestar
                 </h3>
                 <p className="text-sm text-green-700 leading-relaxed">
-                  Tu participación en esta plataforma muestra que te importa tu bienestar mental. 
-                  Seguir reflexionando y conectando con otros es un gran paso hacia el crecimiento personal.
+                  Tu participación en esta plataforma muestra que te importa tu
+                  bienestar mental. Seguir reflexionando y conectando con otros
+                  es un gran paso hacia el crecimiento personal.
                 </p>
               </div>
             </div>
@@ -449,5 +536,5 @@ export default function StudentProfilePage() {
         </Card>
       </div>
     </div>
-  )
+  );
 }

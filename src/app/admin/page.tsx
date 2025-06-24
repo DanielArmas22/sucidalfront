@@ -1,17 +1,23 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
-import { useAuth } from '@/contexts/AuthContext'
-import { mockApi } from '@/lib/mock-data'
-import { AnalyticsData, RiskAlert } from '@/types'
-import { getRiskColor, getRiskLabel, formatRelativeTime } from '@/lib/utils'
-import { 
-  BarChart3, 
-  Users, 
-  AlertTriangle, 
+import { useState, useEffect } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
+import { mockApi } from "@/lib/mock-data";
+import { AnalyticsData, RiskAlert } from "@/types";
+import { getRiskColor, getRiskLabel, formatRelativeTime } from "@/lib/utils";
+import {
+  BarChart3,
+  Users,
+  AlertTriangle,
   MessageCircle,
   TrendingUp,
   TrendingDown,
@@ -20,8 +26,8 @@ import {
   Activity,
   Calendar,
   Brain,
-  Heart
-} from 'lucide-react'
+  Heart,
+} from "lucide-react";
 import {
   BarChart,
   Bar,
@@ -34,34 +40,34 @@ import {
   Line,
   PieChart,
   Pie,
-  Cell
-} from 'recharts'
+  Cell,
+} from "recharts";
 
 export default function AdminDashboardPage() {
-  const { user } = useAuth()
-  const [analytics, setAnalytics] = useState<AnalyticsData | null>(null)
-  const [recentAlerts, setRecentAlerts] = useState<RiskAlert[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const { user } = useAuth();
+  const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
+  const [recentAlerts, setRecentAlerts] = useState<RiskAlert[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    loadDashboardData()
-  }, [])
+    loadDashboardData();
+  }, []);
 
   const loadDashboardData = async () => {
     try {
       const [analyticsData, alertsData] = await Promise.all([
         mockApi.getAnalytics(),
-        mockApi.getRiskAlerts()
-      ])
-      
-      setAnalytics(analyticsData)
-      setRecentAlerts(alertsData.slice(0, 5)) // Solo las 5 más recientes
+        mockApi.getRiskAlerts(),
+      ]);
+
+      setAnalytics(analyticsData);
+      setRecentAlerts(alertsData.slice(0, 5)); // Solo las 5 más recientes
     } catch (error) {
-      console.error('Error loading dashboard data:', error)
+      console.error("Error loading dashboard data:", error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   if (isLoading || !analytics) {
     return (
@@ -82,23 +88,38 @@ export default function AdminDashboardPage() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   const riskDistributionData = [
-    { name: 'Bajo', value: analytics.riskDistribution.low, color: '#10B981' },
-    { name: 'Medio', value: analytics.riskDistribution.medium, color: '#F59E0B' },
-    { name: 'Alto', value: analytics.riskDistribution.high, color: '#EF4444' }
-  ]
+    { name: "Bajo", value: analytics.riskDistribution.low, color: "#10B981" },
+    {
+      name: "Medio",
+      value: analytics.riskDistribution.medium,
+      color: "#F59E0B",
+    },
+    { name: "Alto", value: analytics.riskDistribution.high, color: "#EF4444" },
+  ];
 
-  const keywordData = analytics.topKeywords.map(kw => ({
+  const keywordData = analytics.topKeywords.map((kw) => ({
     word: kw.word,
     count: kw.count,
-    fill: kw.riskLevel === 'high' ? '#EF4444' : kw.riskLevel === 'medium' ? '#F59E0B' : '#10B981'
-  }))
+    fill:
+      kw.riskLevel === "high"
+        ? "#EF4444"
+        : kw.riskLevel === "medium"
+        ? "#F59E0B"
+        : "#10B981",
+  }));
 
-  const totalAlerts = analytics.riskDistribution.low + analytics.riskDistribution.medium + analytics.riskDistribution.high
-  const highRiskPercentage = totalAlerts > 0 ? ((analytics.riskDistribution.high / totalAlerts) * 100).toFixed(1) : '0'
+  const totalAlerts =
+    analytics.riskDistribution.low +
+    analytics.riskDistribution.medium +
+    analytics.riskDistribution.high;
+  const highRiskPercentage =
+    totalAlerts > 0
+      ? ((analytics.riskDistribution.high / totalAlerts) * 100).toFixed(1)
+      : "0";
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-cyan-50 p-6">
@@ -112,7 +133,8 @@ export default function AdminDashboardPage() {
                 Panel de Control
               </h1>
               <p className="text-gray-600 mt-1">
-                Bienvenido, Dr. {user?.name}. Monitoreo en tiempo real del bienestar estudiantil.
+                Bienvenido, Dr. {user?.name}. Monitoreo en tiempo real del
+                bienestar estudiantil.
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -138,7 +160,9 @@ export default function AdminDashboardPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold">{analytics.totalUsers.toLocaleString()}</div>
+              <div className="text-3xl font-bold">
+                {analytics.totalUsers.toLocaleString()}
+              </div>
               <div className="text-blue-100 text-sm mt-1 flex items-center gap-1">
                 <TrendingUp className="h-3 w-3" />
                 {analytics.activeUsers} activos hoy
@@ -154,10 +178,12 @@ export default function AdminDashboardPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold">{analytics.totalPosts.toLocaleString()}</div>
+              <div className="text-3xl font-bold">
+                {analytics.totalPosts.toLocaleString()}
+              </div>
               <div className="text-green-100 text-sm mt-1 flex items-center gap-1">
-                <TrendingUp className="h-3 w-3" />
-                +{analytics.trends[analytics.trends.length - 1]?.posts || 0} hoy
+                <TrendingUp className="h-3 w-3" />+
+                {analytics.trends[analytics.trends.length - 1]?.posts || 0} hoy
               </div>
             </CardContent>
           </Card>
@@ -172,8 +198,8 @@ export default function AdminDashboardPage() {
             <CardContent>
               <div className="text-3xl font-bold">{analytics.totalAlerts}</div>
               <div className="text-orange-100 text-sm mt-1 flex items-center gap-1">
-                <TrendingUp className="h-3 w-3" />
-                +{analytics.trends[analytics.trends.length - 1]?.alerts || 0} hoy
+                <TrendingUp className="h-3 w-3" />+
+                {analytics.trends[analytics.trends.length - 1]?.alerts || 0} hoy
               </div>
             </CardContent>
           </Card>
@@ -186,7 +212,9 @@ export default function AdminDashboardPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold">{analytics.riskDistribution.high}</div>
+              <div className="text-3xl font-bold">
+                {analytics.riskDistribution.high}
+              </div>
               <div className="text-red-100 text-sm mt-1">
                 {highRiskPercentage}% del total de alertas
               </div>
@@ -210,17 +238,42 @@ export default function AdminDashboardPage() {
               <ResponsiveContainer width="100%" height={300}>
                 <LineChart data={analytics.trends}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis 
-                    dataKey="date" 
-                    tickFormatter={(value) => new Date(value).toLocaleDateString('es-ES', { month: 'short', day: 'numeric' })}
+                  <XAxis
+                    dataKey="date"
+                    tickFormatter={(value) =>
+                      new Date(value).toLocaleDateString("es-ES", {
+                        month: "short",
+                        day: "numeric",
+                      })
+                    }
                   />
                   <YAxis />
-                  <Tooltip 
-                    labelFormatter={(value) => new Date(value as string).toLocaleDateString('es-ES')}
+                  <Tooltip
+                    labelFormatter={(value) =>
+                      new Date(value as string).toLocaleDateString("es-ES")
+                    }
                   />
-                  <Line type="monotone" dataKey="alerts" stroke="#EF4444" strokeWidth={2} name="Alertas" />
-                  <Line type="monotone" dataKey="posts" stroke="#10B981" strokeWidth={2} name="Publicaciones" />
-                  <Line type="monotone" dataKey="users" stroke="#3B82F6" strokeWidth={2} name="Usuarios" />
+                  <Line
+                    type="monotone"
+                    dataKey="alerts"
+                    stroke="#EF4444"
+                    strokeWidth={2}
+                    name="Alertas"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="posts"
+                    stroke="#10B981"
+                    strokeWidth={2}
+                    name="Publicaciones"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="users"
+                    stroke="#3B82F6"
+                    strokeWidth={2}
+                    name="Usuarios"
+                  />
                 </LineChart>
               </ResponsiveContainer>
             </CardContent>
@@ -301,20 +354,33 @@ export default function AdminDashboardPage() {
                 {recentAlerts.length === 0 ? (
                   <div className="text-center py-8">
                     <Heart className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                    <p className="text-gray-600 text-sm">No hay alertas recientes</p>
+                    <p className="text-gray-600 text-sm">
+                      No hay alertas recientes
+                    </p>
                   </div>
                 ) : (
                   recentAlerts.map((alert) => (
-                    <div key={alert.id} className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
-                      <div className={`h-3 w-3 rounded-full mt-2 ${getRiskColor(alert.level)}`}></div>
+                    <div
+                      key={alert.id}
+                      className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg"
+                    >
+                      <div
+                        className={`h-3 w-3 rounded-full mt-2 ${getRiskColor(
+                          alert.level
+                        )}`}
+                      ></div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="font-medium text-gray-900">{alert.userName}</span>
+                          <span className="font-medium text-gray-900">
+                            {alert.userName}
+                          </span>
                           <Badge className={getRiskColor(alert.level)}>
                             {getRiskLabel(alert.level)}
                           </Badge>
                         </div>
-                        <p className="text-sm text-gray-600 truncate">{alert.content.slice(0, 100)}...</p>
+                        <p className="text-sm text-gray-600 truncate">
+                          {alert.content.slice(0, 100)}...
+                        </p>
                         <div className="flex items-center gap-4 mt-2 text-xs text-gray-500">
                           <span>{formatRelativeTime(alert.createdAt)}</span>
                           <span>Score: {(alert.score * 100).toFixed(1)}%</span>
@@ -344,7 +410,9 @@ export default function AdminDashboardPage() {
                 {analytics.facultyStats.map((faculty) => (
                   <div key={faculty.faculty} className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium text-gray-900">{faculty.faculty}</span>
+                      <span className="text-sm font-medium text-gray-900">
+                        {faculty.faculty}
+                      </span>
                       <div className="flex items-center gap-2">
                         <Badge className={getRiskColor(faculty.riskLevel)}>
                           {getRiskLabel(faculty.riskLevel)}
@@ -357,11 +425,17 @@ export default function AdminDashboardPage() {
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div
                         className={`h-2 rounded-full ${
-                          faculty.riskLevel === 'high' ? 'bg-red-500' :
-                          faculty.riskLevel === 'medium' ? 'bg-yellow-500' : 'bg-green-500'
+                          faculty.riskLevel === "high"
+                            ? "bg-red-500"
+                            : faculty.riskLevel === "medium"
+                            ? "bg-yellow-500"
+                            : "bg-green-500"
                         }`}
                         style={{
-                          width: `${Math.min((faculty.alertsCount / faculty.totalStudents) * 100, 100)}%`
+                          width: `${Math.min(
+                            (faculty.alertsCount / faculty.totalStudents) * 100,
+                            100
+                          )}%`,
                         }}
                       ></div>
                     </div>
@@ -382,9 +456,11 @@ export default function AdminDashboardPage() {
                   Sistema de Monitoreo Activo
                 </h3>
                 <p className="text-sm text-blue-700 leading-relaxed">
-                  El sistema está analizando continuamente las interacciones para detectar patrones de riesgo. 
-                  Las alertas se generan usando modelos de machine learning entrenados específicamente para 
-                  identificar señales de alerta temprana en el contenido compartido por los estudiantes.
+                  El sistema está analizando continuamente las interacciones
+                  para detectar patrones de riesgo. Las alertas se generan
+                  usando modelos de machine learning entrenados específicamente
+                  para identificar señales de alerta temprana en el contenido
+                  compartido por los estudiantes.
                 </p>
               </div>
             </div>
@@ -392,5 +468,5 @@ export default function AdminDashboardPage() {
         </Card>
       </div>
     </div>
-  )
+  );
 }

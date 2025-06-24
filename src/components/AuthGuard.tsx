@@ -1,36 +1,36 @@
-'use client'
+"use client";
 
-import { useEffect } from 'react'
-import { useRouter, usePathname } from 'next/navigation'
-import { useAuth } from '@/contexts/AuthContext'
-import { Skeleton } from '@/components/ui/skeleton'
+import { useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function AuthGuard({ children }: { children: React.ReactNode }) {
-  const { user, isLoading } = useAuth()
-  const router = useRouter()
-  const pathname = usePathname()
+  const { user, isLoading } = useAuth();
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (!isLoading) {
-      if (!user && pathname !== '/login') {
-        router.push('/login')
-      } else if (user && pathname === '/login') {
+      if (!user && pathname !== "/login") {
+        router.push("/login");
+      } else if (user && pathname === "/login") {
         // Redirigir según el rol del usuario
-        if (user.role === 'admin') {
-          router.push('/admin')
+        if (user.role === "admin") {
+          router.push("/admin");
         } else {
-          router.push('/student')
+          router.push("/student");
         }
-      } else if (user && pathname === '/') {
+      } else if (user && pathname === "/") {
         // Redirigir desde la página raíz según el rol
-        if (user.role === 'admin') {
-          router.push('/admin')
+        if (user.role === "admin") {
+          router.push("/admin");
         } else {
-          router.push('/student')
+          router.push("/student");
         }
       }
     }
-  }, [user, isLoading, pathname, router])
+  }, [user, isLoading, pathname, router]);
 
   // Mostrar loading mientras se verifica la autenticación
   if (isLoading) {
@@ -42,13 +42,13 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
           <Skeleton className="h-8 w-1/2" />
         </div>
       </div>
-    )
+    );
   }
 
   // Si no hay usuario y no está en login, no mostrar nada (la redirección está en progreso)
-  if (!user && pathname !== '/login') {
-    return null
+  if (!user && pathname !== "/login") {
+    return null;
   }
 
-  return <>{children}</>
+  return <>{children}</>;
 }

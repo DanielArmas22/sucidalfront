@@ -1,18 +1,24 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { mockApi } from '@/lib/mock-data'
-import { MentalHealthResource } from '@/types'
-import { cn } from '@/lib/utils'
-import { 
-  Heart, 
-  Search, 
-  Phone, 
-  MessageCircle, 
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { mockApi } from "@/lib/mock-data";
+import { MentalHealthResource } from "@/types";
+import { cn } from "@/lib/utils";
+import {
+  Heart,
+  Search,
+  Phone,
+  MessageCircle,
   ExternalLink,
   AlertTriangle,
   BookOpen,
@@ -23,63 +29,67 @@ import {
   Headphones,
   Brain,
   Smile,
-  Activity
-} from 'lucide-react'
+  Activity,
+} from "lucide-react";
 
 export default function StudentResourcesPage() {
-  const [resources, setResources] = useState<MentalHealthResource[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedType, setSelectedType] = useState<string>('all')
+  const [resources, setResources] = useState<MentalHealthResource[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedType, setSelectedType] = useState<string>("all");
 
   useEffect(() => {
-    loadResources()
-  }, [])
+    loadResources();
+  }, []);
 
   const loadResources = async () => {
     try {
-      const data = await mockApi.getResources()
-      setResources(data)
+      const data = await mockApi.getResources();
+      setResources(data);
     } catch (error) {
-      console.error('Error loading resources:', error)
+      console.error("Error loading resources:", error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
-  const filteredResources = resources.filter(resource => {
-    const matchesSearch = resource.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         resource.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         resource.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-    const matchesType = selectedType === 'all' || resource.type === selectedType
-    return matchesSearch && matchesType
-  })
+  const filteredResources = resources.filter((resource) => {
+    const matchesSearch =
+      resource.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      resource.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      resource.tags.some((tag) =>
+        tag.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    const matchesType =
+      selectedType === "all" || resource.type === selectedType;
+    return matchesSearch && matchesType;
+  });
 
-  const emergencyResources = resources.filter(r => r.isEmergency)
-  const regularResources = filteredResources.filter(r => !r.isEmergency)
+  const emergencyResources = resources.filter((r) => r.isEmergency);
+  const regularResources = filteredResources.filter((r) => !r.isEmergency);
 
   const resourceTypes = [
-    { value: 'all', label: 'Todos los recursos', icon: Heart },
-    { value: 'contact', label: 'Contactos de ayuda', icon: Phone },
-    { value: 'technique', label: 'Técnicas y ejercicios', icon: Activity },
-    { value: 'article', label: 'Artículos y guías', icon: BookOpen },
-    { value: 'video', label: 'Videos y multimedia', icon: Video }
-  ]
+    { value: "all", label: "Todos los recursos", icon: Heart },
+    { value: "contact", label: "Contactos de ayuda", icon: Phone },
+    { value: "technique", label: "Técnicas y ejercicios", icon: Activity },
+    { value: "article", label: "Artículos y guías", icon: BookOpen },
+    { value: "video", label: "Videos y multimedia", icon: Video },
+  ];
 
   const getResourceIcon = (type: string) => {
     switch (type) {
-      case 'contact':
-        return <Phone className="h-5 w-5" />
-      case 'technique':
-        return <Activity className="h-5 w-5" />
-      case 'article':
-        return <BookOpen className="h-5 w-5" />
-      case 'video':
-        return <Video className="h-5 w-5" />
+      case "contact":
+        return <Phone className="h-5 w-5" />;
+      case "technique":
+        return <Activity className="h-5 w-5" />;
+      case "article":
+        return <BookOpen className="h-5 w-5" />;
+      case "video":
+        return <Video className="h-5 w-5" />;
       default:
-        return <Heart className="h-5 w-5" />
+        return <Heart className="h-5 w-5" />;
     }
-  }
+  };
 
   if (isLoading) {
     return (
@@ -95,7 +105,7 @@ export default function StudentResourcesPage() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -110,8 +120,9 @@ export default function StudentResourcesPage() {
             </h1>
           </div>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Aquí encontrarás herramientas, contactos y recursos para cuidar tu salud mental y bienestar. 
-            Recuerda que buscar ayuda es un acto de valentía.
+            Aquí encontrarás herramientas, contactos y recursos para cuidar tu
+            salud mental y bienestar. Recuerda que buscar ayuda es un acto de
+            valentía.
           </p>
         </div>
 
@@ -125,16 +136,22 @@ export default function StudentResourcesPage() {
                   🚨 ¿Necesitas ayuda inmediata?
                 </h3>
                 <p className="text-red-700 mb-4">
-                  Si estás en crisis o pensando en hacerte daño, por favor busca ayuda inmediatamente.
+                  Si estás en crisis o pensando en hacerte daño, por favor busca
+                  ayuda inmediatamente.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {emergencyResources.map((resource) => (
-                    <div key={resource.id} className="bg-white p-4 rounded-lg border border-red-200">
+                    <div
+                      key={resource.id}
+                      className="bg-white p-4 rounded-lg border border-red-200"
+                    >
                       <h4 className="font-semibold text-red-800 mb-2 flex items-center gap-2">
                         <Phone className="h-4 w-4" />
                         {resource.title}
                       </h4>
-                      <p className="text-sm text-red-700 mb-2">{resource.description}</p>
+                      <p className="text-sm text-red-700 mb-2">
+                        {resource.description}
+                      </p>
                       {resource.content && (
                         <div className="text-sm text-red-800 bg-red-50 p-2 rounded whitespace-pre-line">
                           {resource.content}
@@ -165,20 +182,26 @@ export default function StudentResourcesPage() {
               </div>
               <div className="flex gap-2 flex-wrap">
                 {resourceTypes.map((type) => {
-                  const Icon = type.icon
-                  const count = type.value === 'all' 
-                    ? resources.filter(r => !r.isEmergency).length
-                    : resources.filter(r => r.type === type.value && !r.isEmergency).length
-                    
+                  const Icon = type.icon;
+                  const count =
+                    type.value === "all"
+                      ? resources.filter((r) => !r.isEmergency).length
+                      : resources.filter(
+                          (r) => r.type === type.value && !r.isEmergency
+                        ).length;
+
                   return (
                     <Button
                       key={type.value}
-                      variant={selectedType === type.value ? 'default' : 'outline'}
+                      variant={
+                        selectedType === type.value ? "default" : "outline"
+                      }
                       size="sm"
                       onClick={() => setSelectedType(type.value)}
                       className={cn(
                         "flex items-center gap-2",
-                        selectedType === type.value && "bg-green-600 hover:bg-green-700"
+                        selectedType === type.value &&
+                          "bg-green-600 hover:bg-green-700"
                       )}
                     >
                       <Icon className="h-4 w-4" />
@@ -187,7 +210,7 @@ export default function StudentResourcesPage() {
                         {count}
                       </Badge>
                     </Button>
-                  )
+                  );
                 })}
               </div>
             </div>
@@ -224,8 +247,9 @@ export default function StudentResourcesPage() {
             </CardHeader>
             <CardContent>
               <p className="text-blue-700 text-sm leading-relaxed">
-                Todos los recursos aquí compartidos respetan tu privacidad. Cuando contactes servicios de apoyo, 
-                tu información se manejará de manera confidencial según las políticas de cada servicio.
+                Todos los recursos aquí compartidos respetan tu privacidad.
+                Cuando contactes servicios de apoyo, tu información se manejará
+                de manera confidencial según las políticas de cada servicio.
               </p>
             </CardContent>
           </Card>
@@ -239,8 +263,9 @@ export default function StudentResourcesPage() {
             </CardHeader>
             <CardContent>
               <p className="text-green-700 text-sm leading-relaxed">
-                Buscar ayuda es normal y valiente. Miles de estudiantes utilizan estos recursos cada año. 
-                El apoyo profesional puede hacer una gran diferencia en tu bienestar.
+                Buscar ayuda es normal y valiente. Miles de estudiantes utilizan
+                estos recursos cada año. El apoyo profesional puede hacer una
+                gran diferencia en tu bienestar.
               </p>
             </CardContent>
           </Card>
@@ -262,30 +287,39 @@ export default function StudentResourcesPage() {
               <div className="bg-white p-4 rounded-lg border border-purple-200">
                 <div className="flex items-center gap-2 mb-2">
                   <Activity className="h-5 w-5 text-purple-600" />
-                  <h4 className="font-semibold text-purple-800">Respiración 4-7-8</h4>
+                  <h4 className="font-semibold text-purple-800">
+                    Respiración 4-7-8
+                  </h4>
                 </div>
                 <p className="text-sm text-purple-700">
-                  Inhala 4 segundos, retén 7 segundos, exhala 8 segundos. Repite 4 veces.
+                  Inhala 4 segundos, retén 7 segundos, exhala 8 segundos. Repite
+                  4 veces.
                 </p>
               </div>
-              
+
               <div className="bg-white p-4 rounded-lg border border-purple-200">
                 <div className="flex items-center gap-2 mb-2">
                   <Smile className="h-5 w-5 text-purple-600" />
-                  <h4 className="font-semibold text-purple-800">Técnica 5-4-3-2-1</h4>
+                  <h4 className="font-semibold text-purple-800">
+                    Técnica 5-4-3-2-1
+                  </h4>
                 </div>
                 <p className="text-sm text-purple-700">
-                  5 cosas que ves, 4 que tocas, 3 que escuchas, 2 que hueles, 1 que saboreas.
+                  5 cosas que ves, 4 que tocas, 3 que escuchas, 2 que hueles, 1
+                  que saboreas.
                 </p>
               </div>
-              
+
               <div className="bg-white p-4 rounded-lg border border-purple-200">
                 <div className="flex items-center gap-2 mb-2">
                   <Headphones className="h-5 w-5 text-purple-600" />
-                  <h4 className="font-semibold text-purple-800">Música Relajante</h4>
+                  <h4 className="font-semibold text-purple-800">
+                    Música Relajante
+                  </h4>
                 </div>
                 <p className="text-sm text-purple-700">
-                  Escucha música suave o sonidos de la naturaleza por 5-10 minutos.
+                  Escucha música suave o sonidos de la naturaleza por 5-10
+                  minutos.
                 </p>
               </div>
             </div>
@@ -293,27 +327,27 @@ export default function StudentResourcesPage() {
         </Card>
       </div>
     </div>
-  )
+  );
 }
 
 function ResourceCard({ resource }: { resource: MentalHealthResource }) {
-  const [isExpanded, setIsExpanded] = useState(false)
-  
+  const [isExpanded, setIsExpanded] = useState(false);
+
   const getResourceIcon = (type: string) => {
     switch (type) {
-      case 'contact':
-        return <Phone className="h-5 w-5" />
-      case 'technique':
-        return <Activity className="h-5 w-5" />
-      case 'article':
-        return <BookOpen className="h-5 w-5" />
-      case 'video':
-        return <Video className="h-5 w-5" />
+      case "contact":
+        return <Phone className="h-5 w-5" />;
+      case "technique":
+        return <Activity className="h-5 w-5" />;
+      case "article":
+        return <BookOpen className="h-5 w-5" />;
+      case "video":
+        return <Video className="h-5 w-5" />;
       default:
-        return <Heart className="h-5 w-5" />
+        return <Heart className="h-5 w-5" />;
     }
-  }
-  
+  };
+
   return (
     <Card className="hover:shadow-md transition-shadow bg-white h-fit">
       <CardHeader className="pb-3">
@@ -323,14 +357,14 @@ function ResourceCard({ resource }: { resource: MentalHealthResource }) {
             <div>
               <CardTitle className="text-lg">{resource.title}</CardTitle>
               <Badge variant="outline" className="mt-1 text-xs">
-                {resource.type === 'contact' && 'Contacto'}
-                {resource.type === 'technique' && 'Técnica'}
-                {resource.type === 'article' && 'Artículo'}
-                {resource.type === 'video' && 'Video'}
+                {resource.type === "contact" && "Contacto"}
+                {resource.type === "technique" && "Técnica"}
+                {resource.type === "article" && "Artículo"}
+                {resource.type === "video" && "Video"}
               </Badge>
             </div>
           </div>
-          {resource.type === 'contact' && (
+          {resource.type === "contact" && (
             <div className="flex items-center gap-1 text-green-600">
               <Clock className="h-4 w-4" />
               <span className="text-xs">24/7</span>
@@ -347,14 +381,17 @@ function ResourceCard({ resource }: { resource: MentalHealthResource }) {
           <div className="mb-4">
             <div className="bg-gray-50 p-3 rounded-lg text-sm">
               <pre className="whitespace-pre-wrap font-sans text-gray-700">
-                {isExpanded ? resource.content : resource.content.slice(0, 150) + (resource.content.length > 150 ? '...' : '')}
+                {isExpanded
+                  ? resource.content
+                  : resource.content.slice(0, 150) +
+                    (resource.content.length > 150 ? "..." : "")}
               </pre>
               {resource.content.length > 150 && (
                 <button
                   onClick={() => setIsExpanded(!isExpanded)}
                   className="text-blue-600 hover:text-blue-800 text-xs mt-2"
                 >
-                  {isExpanded ? 'Ver menos' : 'Ver más'}
+                  {isExpanded ? "Ver menos" : "Ver más"}
                 </button>
               )}
             </div>
@@ -378,9 +415,12 @@ function ResourceCard({ resource }: { resource: MentalHealthResource }) {
           </a>
         )}
 
-        {resource.type === 'contact' && !resource.url && (
+        {resource.type === "contact" && !resource.url && (
           <div className="flex gap-2">
-            <Button size="sm" className="flex-1 bg-green-600 hover:bg-green-700">
+            <Button
+              size="sm"
+              className="flex-1 bg-green-600 hover:bg-green-700"
+            >
               <Phone className="h-4 w-4 mr-2" />
               Llamar
             </Button>
@@ -407,5 +447,5 @@ function ResourceCard({ resource }: { resource: MentalHealthResource }) {
         )}
       </CardContent>
     </Card>
-  )
+  );
 }

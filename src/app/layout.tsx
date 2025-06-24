@@ -12,8 +12,14 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Bienestar Estudiantil - Sistema de Apoyo Universitario",
-  description: "Plataforma segura de apoyo y bienestar para estudiantes universitarios",
-  keywords: ["bienestar estudiantil", "apoyo universitario", "salud mental", "estudiantes"],
+  description:
+    "Plataforma segura de apoyo y bienestar para estudiantes universitarios",
+  keywords: [
+    "bienestar estudiantil",
+    "apoyo universitario",
+    "salud mental",
+    "estudiantes",
+  ],
 };
 
 export default function RootLayout({
@@ -28,9 +34,7 @@ export default function RootLayout({
           <AuthGuard>
             <div className="min-h-screen flex flex-col">
               <Navigation />
-              <main className="flex-1">
-                {children}
-              </main>
+              <main className="flex-1">{children}</main>
             </div>
           </AuthGuard>
         </AuthProvider>

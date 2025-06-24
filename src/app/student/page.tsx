@@ -1,96 +1,106 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { useAuth } from '@/contexts/AuthContext'
-import { mockApi } from '@/lib/mock-data'
-import { Post, PostCategory, POST_CATEGORIES, REACTION_TYPES } from '@/types'
-import { formatRelativeTime, cn } from '@/lib/utils'
-import { 
-  MessageCircle, 
-  Plus, 
-  Search, 
-  Filter, 
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/contexts/AuthContext";
+import { mockApi } from "@/lib/mock-data";
+import { Post, PostCategory, POST_CATEGORIES, REACTION_TYPES } from "@/types";
+import { formatRelativeTime, cn } from "@/lib/utils";
+import {
+  MessageCircle,
+  Plus,
+  Search,
+  Filter,
   Heart,
   Eye,
   EyeOff,
   Send,
   Users,
   TrendingUp,
-  MessageSquare
-} from 'lucide-react'
+  MessageSquare,
+} from "lucide-react";
 
 export default function StudentForumPage() {
-  const { user } = useAuth()
-  const [posts, setPosts] = useState<Post[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [showCreatePost, setShowCreatePost] = useState(false)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState<PostCategory | 'all'>('all')
+  const { user } = useAuth();
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showCreatePost, setShowCreatePost] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<
+    PostCategory | "all"
+  >("all");
   const [newPost, setNewPost] = useState({
-    title: '',
-    content: '',
-    category: 'general' as PostCategory,
-    isAnonymous: false
-  })
+    title: "",
+    content: "",
+    category: "general" as PostCategory,
+    isAnonymous: false,
+  });
 
   useEffect(() => {
-    loadPosts()
-  }, [])
+    loadPosts();
+  }, []);
 
   const loadPosts = async () => {
     try {
-      const data = await mockApi.getPosts()
-      setPosts(data)
+      const data = await mockApi.getPosts();
+      setPosts(data);
     } catch (error) {
-      console.error('Error loading posts:', error)
+      console.error("Error loading posts:", error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleCreatePost = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!user) return
+    e.preventDefault();
+    if (!user) return;
 
     try {
       await mockApi.createPost({
         authorId: user.id,
-        authorName: newPost.isAnonymous ? 'Usuario Anónimo' : user.name,
+        authorName: newPost.isAnonymous ? "Usuario Anónimo" : user.name,
         title: newPost.title,
         content: newPost.content,
         category: newPost.category,
-        isAnonymous: newPost.isAnonymous
-      })
-      
+        isAnonymous: newPost.isAnonymous,
+      });
+
       setNewPost({
-        title: '',
-        content: '',
-        category: 'general',
-        isAnonymous: false
-      })
-      setShowCreatePost(false)
-      loadPosts()
+        title: "",
+        content: "",
+        category: "general",
+        isAnonymous: false,
+      });
+      setShowCreatePost(false);
+      loadPosts();
     } catch (error) {
-      console.error('Error creating post:', error)
+      console.error("Error creating post:", error);
     }
-  }
+  };
 
-  const filteredPosts = posts.filter(post => {
-    const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         post.content.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesCategory = selectedCategory === 'all' || post.category === selectedCategory
-    return matchesSearch && matchesCategory
-  })
+  const filteredPosts = posts.filter((post) => {
+    const matchesSearch =
+      post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      post.content.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory =
+      selectedCategory === "all" || post.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
-  const categoryStats = POST_CATEGORIES.map(category => ({
+  const categoryStats = POST_CATEGORIES.map((category) => ({
     ...category,
-    count: posts.filter(p => p.category === category.value).length
-  }))
+    count: posts.filter((p) => p.category === category.value).length,
+  }));
 
   if (isLoading) {
     return (
@@ -107,7 +117,7 @@ export default function StudentForumPage() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -122,7 +132,8 @@ export default function StudentForumPage() {
                 Foro Estudiantil
               </h1>
               <p className="text-gray-600 mt-1">
-                Un espacio seguro para compartir, aprender y apoyarnos mutuamente
+                Un espacio seguro para compartir, aprender y apoyarnos
+                mutuamente
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -167,23 +178,25 @@ export default function StudentForumPage() {
                     />
                   </div>
                 </div>
-                
+
                 <div>
                   <label className="text-sm font-medium text-gray-700 mb-2 block">
                     Categoría
                   </label>
                   <div className="space-y-2">
                     <button
-                      onClick={() => setSelectedCategory('all')}
+                      onClick={() => setSelectedCategory("all")}
                       className={cn(
                         "w-full text-left px-3 py-2 rounded-lg text-sm transition-colors",
-                        selectedCategory === 'all'
+                        selectedCategory === "all"
                           ? "bg-green-100 text-green-700 border border-green-200"
                           : "hover:bg-gray-100"
                       )}
                     >
                       Todas las categorías
-                      <span className="float-right text-gray-500">{posts.length}</span>
+                      <span className="float-right text-gray-500">
+                        {posts.length}
+                      </span>
                     </button>
                     {categoryStats.map((category) => (
                       <button
@@ -197,7 +210,9 @@ export default function StudentForumPage() {
                         )}
                       >
                         {category.label}
-                        <span className="float-right text-gray-500">{category.count}</span>
+                        <span className="float-right text-gray-500">
+                          {category.count}
+                        </span>
                       </button>
                     ))}
                   </div>
@@ -217,22 +232,36 @@ export default function StudentForumPage() {
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between">
                     <span className="text-gray-600">Hoy</span>
-                    <span className="font-medium">{posts.filter(p => {
-                      const today = new Date()
-                      return p.createdAt.toDateString() === today.toDateString()
-                    }).length} publicaciones</span>
+                    <span className="font-medium">
+                      {
+                        posts.filter((p) => {
+                          const today = new Date();
+                          return (
+                            p.createdAt.toDateString() === today.toDateString()
+                          );
+                        }).length
+                      }{" "}
+                      publicaciones
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Esta semana</span>
-                    <span className="font-medium">{posts.filter(p => {
-                      const weekAgo = new Date()
-                      weekAgo.setDate(weekAgo.getDate() - 7)
-                      return p.createdAt >= weekAgo
-                    }).length} publicaciones</span>
+                    <span className="font-medium">
+                      {
+                        posts.filter((p) => {
+                          const weekAgo = new Date();
+                          weekAgo.setDate(weekAgo.getDate() - 7);
+                          return p.createdAt >= weekAgo;
+                        }).length
+                      }{" "}
+                      publicaciones
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Total reacciones</span>
-                    <span className="font-medium">{posts.reduce((sum, p) => sum + p.reactions.length, 0)}</span>
+                    <span className="font-medium">
+                      {posts.reduce((sum, p) => sum + p.reactions.length, 0)}
+                    </span>
                   </div>
                 </div>
               </CardContent>
@@ -245,7 +274,9 @@ export default function StudentForumPage() {
             {showCreatePost && (
               <Card className="border-green-200 shadow-md">
                 <CardHeader>
-                  <CardTitle className="text-green-700">Nueva Publicación</CardTitle>
+                  <CardTitle className="text-green-700">
+                    Nueva Publicación
+                  </CardTitle>
                   <CardDescription>
                     Comparte tus pensamientos de manera segura y respetuosa
                   </CardDescription>
@@ -259,18 +290,25 @@ export default function StudentForumPage() {
                       <Input
                         placeholder="¿De qué quieres hablar?"
                         value={newPost.title}
-                        onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
+                        onChange={(e) =>
+                          setNewPost({ ...newPost, title: e.target.value })
+                        }
                         required
                       />
                     </div>
-                    
+
                     <div>
                       <label className="text-sm font-medium text-gray-700 mb-2 block">
                         Categoría
                       </label>
                       <select
                         value={newPost.category}
-                        onChange={(e) => setNewPost({ ...newPost, category: e.target.value as PostCategory })}
+                        onChange={(e) =>
+                          setNewPost({
+                            ...newPost,
+                            category: e.target.value as PostCategory,
+                          })
+                        }
                         className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500"
                       >
                         {POST_CATEGORIES.map((category) => (
@@ -288,7 +326,9 @@ export default function StudentForumPage() {
                       <Textarea
                         placeholder="Expresa tus ideas, sentimientos o experiencias. Este es un espacio seguro y de apoyo."
                         value={newPost.content}
-                        onChange={(e) => setNewPost({ ...newPost, content: e.target.value })}
+                        onChange={(e) =>
+                          setNewPost({ ...newPost, content: e.target.value })
+                        }
                         className="min-h-[120px]"
                         required
                       />
@@ -299,15 +339,24 @@ export default function StudentForumPage() {
                         <input
                           type="checkbox"
                           checked={newPost.isAnonymous}
-                          onChange={(e) => setNewPost({ ...newPost, isAnonymous: e.target.checked })}
+                          onChange={(e) =>
+                            setNewPost({
+                              ...newPost,
+                              isAnonymous: e.target.checked,
+                            })
+                          }
                           className="rounded border-gray-300 text-green-600 focus:ring-green-500"
                         />
                         <span className="text-sm text-gray-700 flex items-center gap-2">
-                          {newPost.isAnonymous ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                          {newPost.isAnonymous ? (
+                            <EyeOff className="h-4 w-4" />
+                          ) : (
+                            <Eye className="h-4 w-4" />
+                          )}
                           Publicar de forma anónima
                         </span>
                       </label>
-                      
+
                       <div className="flex gap-3">
                         <Button
                           type="button"
@@ -337,22 +386,26 @@ export default function StudentForumPage() {
                   <CardContent>
                     <MessageSquare className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                     <h3 className="text-lg font-medium text-gray-900 mb-2">
-                      {searchTerm || selectedCategory !== 'all' ? 'No se encontraron publicaciones' : 'Sé el primero en publicar'}
+                      {searchTerm || selectedCategory !== "all"
+                        ? "No se encontraron publicaciones"
+                        : "Sé el primero en publicar"}
                     </h3>
                     <p className="text-gray-600 mb-4">
-                      {searchTerm || selectedCategory !== 'all' 
-                        ? 'Intenta con otros términos de búsqueda o categorías'
-                        : 'Comparte tus pensamientos y comienza la conversación'}
+                      {searchTerm || selectedCategory !== "all"
+                        ? "Intenta con otros términos de búsqueda o categorías"
+                        : "Comparte tus pensamientos y comienza la conversación"}
                     </p>
-                    {!showCreatePost && !searchTerm && selectedCategory === 'all' && (
-                      <Button
-                        onClick={() => setShowCreatePost(true)}
-                        className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
-                      >
-                        <Plus className="h-4 w-4 mr-2" />
-                        Crear Primera Publicación
-                      </Button>
-                    )}
+                    {!showCreatePost &&
+                      !searchTerm &&
+                      selectedCategory === "all" && (
+                        <Button
+                          onClick={() => setShowCreatePost(true)}
+                          className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
+                        >
+                          <Plus className="h-4 w-4 mr-2" />
+                          Crear Primera Publicación
+                        </Button>
+                      )}
                   </CardContent>
                 </Card>
               ) : (
@@ -365,12 +418,12 @@ export default function StudentForumPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function PostCard({ post }: { post: Post }) {
-  const category = POST_CATEGORIES.find(c => c.value === post.category)
-  
+  const category = POST_CATEGORIES.find((c) => c.value === post.category);
+
   return (
     <Card className="hover:shadow-md transition-shadow bg-white">
       <CardHeader className="pb-3">
@@ -391,7 +444,9 @@ function PostCard({ post }: { post: Post }) {
                 )}
                 <div>
                   <p className="font-medium text-gray-900">{post.authorName}</p>
-                  <p className="text-xs text-gray-500">{formatRelativeTime(post.createdAt)}</p>
+                  <p className="text-xs text-gray-500">
+                    {formatRelativeTime(post.createdAt)}
+                  </p>
                 </div>
               </div>
               {category && (
@@ -400,17 +455,21 @@ function PostCard({ post }: { post: Post }) {
                 </Badge>
               )}
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{post.title}</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              {post.title}
+            </h3>
           </div>
         </div>
       </CardHeader>
       <CardContent>
         <p className="text-gray-700 mb-4 leading-relaxed">{post.content}</p>
-        
+
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             {REACTION_TYPES.map((reactionType) => {
-              const count = post.reactions.filter(r => r.type === reactionType.value).length
+              const count = post.reactions.filter(
+                (r) => r.type === reactionType.value
+              ).length;
               return (
                 <button
                   key={reactionType.value}
@@ -418,12 +477,14 @@ function PostCard({ post }: { post: Post }) {
                   title={reactionType.label}
                 >
                   <span className="text-sm">{reactionType.emoji}</span>
-                  {count > 0 && <span className="text-xs text-gray-600">{count}</span>}
+                  {count > 0 && (
+                    <span className="text-xs text-gray-600">{count}</span>
+                  )}
                 </button>
-              )
+              );
             })}
           </div>
-          
+
           <div className="flex items-center gap-4 text-sm text-gray-500">
             {post.replies.length > 0 && (
               <div className="flex items-center gap-1">
@@ -450,8 +511,12 @@ function PostCard({ post }: { post: Post }) {
                       </span>
                     </div>
                   )}
-                  <span className="text-sm font-medium text-gray-900">{reply.authorName}</span>
-                  <span className="text-xs text-gray-500">{formatRelativeTime(reply.createdAt)}</span>
+                  <span className="text-sm font-medium text-gray-900">
+                    {reply.authorName}
+                  </span>
+                  <span className="text-xs text-gray-500">
+                    {formatRelativeTime(reply.createdAt)}
+                  </span>
                 </div>
                 <p className="text-sm text-gray-700">{reply.content}</p>
               </div>
@@ -465,5 +530,5 @@ function PostCard({ post }: { post: Post }) {
         )}
       </CardContent>
     </Card>
-  )
+  );
 }

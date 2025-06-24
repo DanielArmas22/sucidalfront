@@ -1,17 +1,17 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { Button } from '@/components/ui/button'
-import { useAuth } from '@/contexts/AuthContext'
-import { 
-  MessageCircle, 
-  BookOpen, 
-  Heart, 
-  User, 
-  LogOut, 
-  Menu, 
+import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
+import {
+  MessageCircle,
+  BookOpen,
+  Heart,
+  User,
+  LogOut,
+  Menu,
   X,
   Shield,
   BarChart3,
@@ -19,102 +19,111 @@ import {
   Users,
   Settings,
   HelpCircle,
-  Brain
-} from 'lucide-react'
-import { cn } from '@/lib/utils'
+  Brain,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const studentNavItems = [
   {
-    label: 'Foro',
-    href: '/student',
+    label: "Foro",
+    href: "/student",
     icon: MessageCircle,
-    description: 'Comparte y conecta con otros estudiantes'
+    description: "Comparte y conecta con otros estudiantes",
   },
   {
-    label: 'Mi Diario',
-    href: '/student/diary',
+    label: "Mi Diario",
+    href: "/student/diary",
     icon: BookOpen,
-    description: 'Espacio privado para tus reflexiones'
+    description: "Espacio privado para tus reflexiones",
   },
   {
-    label: 'Recursos',
-    href: '/student/resources',
+    label: "Recursos",
+    href: "/student/resources",
     icon: Heart,
-    description: 'Apoyo y recursos de bienestar'
-  },  {
-    label: 'Mi Perfil',
-    href: '/student/profile',
-    icon: User,
-    description: 'Gestiona tu perfil y configuración'
+    description: "Apoyo y recursos de bienestar",
   },
   {
-    label: 'Ayuda',
-    href: '/help',
+    label: "Mi Perfil",
+    href: "/student/profile",
+    icon: User,
+    description: "Gestiona tu perfil y configuración",
+  },
+  {
+    label: "Ayuda",
+    href: "/help",
     icon: HelpCircle,
-    description: 'Guías y documentación'
-  }
-]
+    description: "Guías y documentación",
+  },
+];
 
 const adminNavItems = [
   {
-    label: 'Dashboard',
-    href: '/admin',
+    label: "Dashboard",
+    href: "/admin",
     icon: BarChart3,
-    description: 'Vista general y estadísticas'
+    description: "Vista general y estadísticas",
   },
   {
-    label: 'Alertas',
-    href: '/admin/alerts',
+    label: "Alertas",
+    href: "/admin/alerts",
     icon: AlertTriangle,
-    description: 'Monitoreo de riesgo y casos prioritarios'
-  },  {
-    label: 'Usuarios',
-    href: '/admin/users',
+    description: "Monitoreo de riesgo y casos prioritarios",
+  },
+  {
+    label: "Usuarios",
+    href: "/admin/users",
     icon: Users,
-    description: 'Gestión de estudiantes registrados'
-  },  {
-    label: 'Configuración',
-    href: '/admin/settings',
+    description: "Gestión de estudiantes registrados",
+  },
+  {
+    label: "Configuración",
+    href: "/admin/settings",
     icon: Settings,
-    description: 'Configuración del sistema'
+    description: "Configuración del sistema",
   },
   {
-    label: 'Análisis ML',
-    href: '/admin/ml-analysis',
+    label: "Análisis ML",
+    href: "/admin/ml-analysis",
     icon: Brain,
-    description: 'Explicabilidad del modelo ML'
+    description: "Explicabilidad del modelo ML",
   },
   {
-    label: 'Ayuda',
-    href: '/help',
+    label: "Ayuda",
+    href: "/help",
     icon: HelpCircle,
-    description: 'Guías y documentación'
-  }
-]
+    description: "Guías y documentación",
+  },
+];
 
 export default function Navigation() {
-  const { user, logout } = useAuth()
-  const pathname = usePathname()
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const { user, logout } = useAuth();
+  const pathname = usePathname();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  if (!user || pathname === '/login') return null
+  if (!user || pathname === "/login") return null;
 
-  const navItems = user.role === 'admin' ? adminNavItems : studentNavItems
-  const isAdmin = user.role === 'admin'
+  const navItems = user.role === "admin" ? adminNavItems : studentNavItems;
+  const isAdmin = user.role === "admin";
 
   return (
-    <nav className={cn(
-      "bg-white border-b border-gray-200 shadow-sm",
-      isAdmin ? "border-l-4 border-l-blue-600" : "border-l-4 border-l-green-500"
-    )}>
+    <nav
+      className={cn(
+        "bg-white border-b border-gray-200 shadow-sm",
+        isAdmin
+          ? "border-l-4 border-l-blue-600"
+          : "border-l-4 border-l-green-500"
+      )}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo y título */}
           <div className="flex items-center space-x-4">
-            <div className={cn(
-              "flex items-center space-x-2",
-              isAdmin ? "text-blue-600" : "text-green-600"
-            )}>
+            <div
+              className={cn(
+                "flex items-center space-x-2",
+                isAdmin ? "text-blue-600" : "text-green-600"
+              )}
+            >
               {isAdmin ? (
                 <Shield className="h-8 w-8" />
               ) : (
@@ -122,10 +131,10 @@ export default function Navigation() {
               )}
               <div>
                 <h1 className="text-xl font-bold text-gray-900">
-                  {isAdmin ? 'Panel Administrativo' : 'Bienestar Estudiantil'}
+                  {isAdmin ? "Panel Administrativo" : "Bienestar Estudiantil"}
                 </h1>
                 <p className="text-sm text-gray-500">
-                  {isAdmin ? 'Sistema de Monitoreo' : 'Espacio Seguro de Apoyo'}
+                  {isAdmin ? "Sistema de Monitoreo" : "Espacio Seguro de Apoyo"}
                 </p>
               </div>
             </div>
@@ -134,10 +143,13 @@ export default function Navigation() {
           {/* Navegación desktop */}
           <div className="hidden md:flex items-center space-x-1">
             {navItems.map((item) => {
-              const Icon = item.icon
-              const isActive = pathname === item.href || 
-                (item.href !== '/student' && item.href !== '/admin' && pathname.startsWith(item.href))
-              
+              const Icon = item.icon;
+              const isActive =
+                pathname === item.href ||
+                (item.href !== "/student" &&
+                  item.href !== "/admin" &&
+                  pathname.startsWith(item.href));
+
               return (
                 <Link
                   key={item.href}
@@ -145,7 +157,7 @@ export default function Navigation() {
                   className={cn(
                     "flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
                     isActive
-                      ? isAdmin 
+                      ? isAdmin
                         ? "bg-blue-100 text-blue-700 border border-blue-200"
                         : "bg-green-100 text-green-700 border border-green-200"
                       : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
@@ -155,7 +167,7 @@ export default function Navigation() {
                   <Icon className="h-4 w-4" />
                   <span>{item.label}</span>
                 </Link>
-              )
+              );
             })}
           </div>
 
@@ -164,7 +176,9 @@ export default function Navigation() {
             <div className="hidden sm:block text-right">
               <p className="text-sm font-medium text-gray-900">{user.name}</p>
               <p className="text-xs text-gray-500">
-                {isAdmin ? 'Administrador' : `${user.faculty} - Semestre ${user.semester}`}
+                {isAdmin
+                  ? "Administrador"
+                  : `${user.faculty} - Semestre ${user.semester}`}
               </p>
             </div>
             <Button
@@ -198,10 +212,13 @@ export default function Navigation() {
           <div className="md:hidden border-t border-gray-200 py-4">
             <div className="space-y-2">
               {navItems.map((item) => {
-                const Icon = item.icon
-                const isActive = pathname === item.href || 
-                  (item.href !== '/student' && item.href !== '/admin' && pathname.startsWith(item.href))
-                
+                const Icon = item.icon;
+                const isActive =
+                  pathname === item.href ||
+                  (item.href !== "/student" &&
+                    item.href !== "/admin" &&
+                    pathname.startsWith(item.href));
+
                 return (
                   <Link
                     key={item.href}
@@ -209,7 +226,7 @@ export default function Navigation() {
                     className={cn(
                       "flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors",
                       isActive
-                        ? isAdmin 
+                        ? isAdmin
                           ? "bg-blue-100 text-blue-700 border border-blue-200"
                           : "bg-green-100 text-green-700 border border-green-200"
                         : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
@@ -219,15 +236,17 @@ export default function Navigation() {
                     <Icon className="h-5 w-5" />
                     <div>
                       <div>{item.label}</div>
-                      <div className="text-xs text-gray-500">{item.description}</div>
+                      <div className="text-xs text-gray-500">
+                        {item.description}
+                      </div>
                     </div>
                   </Link>
-                )
+                );
               })}
             </div>
           </div>
         )}
       </div>
     </nav>
-  )
+  );
 }

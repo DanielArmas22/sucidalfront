@@ -1,19 +1,31 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { useAuth } from '@/contexts/AuthContext'
-import { mockApi } from '@/lib/mock-data'
-import { RiskAlert, Intervention } from '@/types'
-import { getRiskColor, getRiskLabel, formatRelativeTime, formatDate, cn } from '@/lib/utils'
-import { 
-  AlertTriangle, 
-  Search, 
-  Filter, 
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/contexts/AuthContext";
+import { mockApi } from "@/lib/mock-data";
+import { RiskAlert, Intervention } from "@/types";
+import {
+  getRiskColor,
+  getRiskLabel,
+  formatRelativeTime,
+  formatDate,
+  cn,
+} from "@/lib/utils";
+import {
+  AlertTriangle,
+  Search,
+  Filter,
   Eye,
   MessageSquare,
   Phone,
@@ -29,61 +41,74 @@ import {
   BarChart3,
   TrendingUp,
   Users,
-  Activity
-} from 'lucide-react'
+  Activity,
+} from "lucide-react";
 
-type AlertStatusFilter = 'all' | 'new' | 'in-progress' | 'resolved' | 'false-positive'
-type RiskLevelFilter = 'all' | 'low' | 'medium' | 'high'
+type AlertStatusFilter =
+  | "all"
+  | "new"
+  | "in-progress"
+  | "resolved"
+  | "false-positive";
+type RiskLevelFilter = "all" | "low" | "medium" | "high";
 
 export default function AdminAlertsPage() {
-  const { user } = useAuth()
-  const [alerts, setAlerts] = useState<RiskAlert[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [statusFilter, setStatusFilter] = useState<AlertStatusFilter>('all')
-  const [riskFilter, setRiskFilter] = useState<RiskLevelFilter>('all')
-  const [selectedAlert, setSelectedAlert] = useState<RiskAlert | null>(null)
-  const [showInterventionForm, setShowInterventionForm] = useState(false)
+  const { user } = useAuth();
+  const [alerts, setAlerts] = useState<RiskAlert[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState<AlertStatusFilter>("all");
+  const [riskFilter, setRiskFilter] = useState<RiskLevelFilter>("all");
+  const [selectedAlert, setSelectedAlert] = useState<RiskAlert | null>(null);
+  const [showInterventionForm, setShowInterventionForm] = useState(false);
   const [newIntervention, setNewIntervention] = useState({
-    type: 'message' as Intervention['type'],
-    description: '',
-    notes: ''
-  })
-  const [alertNotes, setAlertNotes] = useState('')
+    type: "message" as Intervention["type"],
+    description: "",
+    notes: "",
+  });
+  const [alertNotes, setAlertNotes] = useState("");
 
   useEffect(() => {
-    loadAlerts()
-  }, [])
+    loadAlerts();
+  }, []);
 
   const loadAlerts = async () => {
     try {
-      const data = await mockApi.getRiskAlerts()
-      setAlerts(data)
+      const data = await mockApi.getRiskAlerts();
+      setAlerts(data);
     } catch (error) {
-      console.error('Error loading alerts:', error)
+      console.error("Error loading alerts:", error);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
-  const handleStatusUpdate = async (alertId: string, status: RiskAlert['status'], notes?: string) => {
+  const handleStatusUpdate = async (
+    alertId: string,
+    status: RiskAlert["status"],
+    notes?: string
+  ) => {
     try {
-      await mockApi.updateAlertStatus(alertId, status, notes)
-      await loadAlerts()
+      await mockApi.updateAlertStatus(alertId, status, notes);
+      await loadAlerts();
       if (selectedAlert?.id === alertId) {
-        const updatedAlert = alerts.find(a => a.id === alertId)
+        const updatedAlert = alerts.find((a) => a.id === alertId);
         if (updatedAlert) {
-          setSelectedAlert({ ...updatedAlert, status, notes: notes || updatedAlert.notes })
+          setSelectedAlert({
+            ...updatedAlert,
+            status,
+            notes: notes || updatedAlert.notes,
+          });
         }
       }
     } catch (error) {
-      console.error('Error updating alert status:', error)
+      console.error("Error updating alert status:", error);
     }
-  }
+  };
 
   const handleAddIntervention = async () => {
-    if (!selectedAlert || !user) return
-    
+    if (!selectedAlert || !user) return;
+
     const intervention: Intervention = {
       id: Math.random().toString(36).substring(7),
       alertId: selectedAlert.id,
@@ -92,66 +117,68 @@ export default function AdminAlertsPage() {
       performedBy: user.name,
       performedAt: new Date(),
       notes: newIntervention.notes,
-      status: 'completed'
-    }
+      status: "completed",
+    };
 
     // Simular agregar intervención
     const updatedAlert = {
       ...selectedAlert,
-      interventions: [...selectedAlert.interventions, intervention]
-    }
-    setSelectedAlert(updatedAlert)
-    
-    setNewIntervention({ type: 'message', description: '', notes: '' })
-    setShowInterventionForm(false)
-  }
+      interventions: [...selectedAlert.interventions, intervention],
+    };
+    setSelectedAlert(updatedAlert);
 
-  const filteredAlerts = alerts.filter(alert => {
-    const matchesSearch = alert.userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         alert.userEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         alert.content.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesStatus = statusFilter === 'all' || alert.status === statusFilter
-    const matchesRisk = riskFilter === 'all' || alert.level === riskFilter
-    return matchesSearch && matchesStatus && matchesRisk
-  })
+    setNewIntervention({ type: "message", description: "", notes: "" });
+    setShowInterventionForm(false);
+  };
+
+  const filteredAlerts = alerts.filter((alert) => {
+    const matchesSearch =
+      alert.userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      alert.userEmail.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      alert.content.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesStatus =
+      statusFilter === "all" || alert.status === statusFilter;
+    const matchesRisk = riskFilter === "all" || alert.level === riskFilter;
+    return matchesSearch && matchesStatus && matchesRisk;
+  });
 
   const alertStats = {
     total: alerts.length,
-    new: alerts.filter(a => a.status === 'new').length,
-    inProgress: alerts.filter(a => a.status === 'in-progress').length,
-    resolved: alerts.filter(a => a.status === 'resolved').length,
-    high: alerts.filter(a => a.level === 'high').length
-  }
+    new: alerts.filter((a) => a.status === "new").length,
+    inProgress: alerts.filter((a) => a.status === "in-progress").length,
+    resolved: alerts.filter((a) => a.status === "resolved").length,
+    high: alerts.filter((a) => a.level === "high").length,
+  };
 
-  const getStatusIcon = (status: RiskAlert['status']) => {
+  const getStatusIcon = (status: RiskAlert["status"]) => {
     switch (status) {
-      case 'new':
-        return <AlertCircle className="h-4 w-4 text-red-600" />
-      case 'in-progress':
-        return <Clock className="h-4 w-4 text-yellow-600" />
-      case 'resolved':
-        return <CheckCircle className="h-4 w-4 text-green-600" />
-      case 'false-positive':
-        return <XCircle className="h-4 w-4 text-gray-600" />
+      case "new":
+        return <AlertCircle className="h-4 w-4 text-red-600" />;
+      case "in-progress":
+        return <Clock className="h-4 w-4 text-yellow-600" />;
+      case "resolved":
+        return <CheckCircle className="h-4 w-4 text-green-600" />;
+      case "false-positive":
+        return <XCircle className="h-4 w-4 text-gray-600" />;
       default:
-        return <AlertCircle className="h-4 w-4 text-gray-600" />
+        return <AlertCircle className="h-4 w-4 text-gray-600" />;
     }
-  }
+  };
 
-  const getStatusLabel = (status: RiskAlert['status']) => {
+  const getStatusLabel = (status: RiskAlert["status"]) => {
     switch (status) {
-      case 'new':
-        return 'Nueva'
-      case 'in-progress':
-        return 'En progreso'
-      case 'resolved':
-        return 'Resuelta'
-      case 'false-positive':
-        return 'Falso positivo'
+      case "new":
+        return "Nueva";
+      case "in-progress":
+        return "En progreso";
+      case "resolved":
+        return "Resuelta";
+      case "false-positive":
+        return "Falso positivo";
       default:
-        return 'Desconocido'
+        return "Desconocido";
     }
-  }
+  };
 
   if (isLoading) {
     return (
@@ -168,7 +195,7 @@ export default function AdminAlertsPage() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -183,7 +210,8 @@ export default function AdminAlertsPage() {
                 Gestión de Alertas de Riesgo
               </h1>
               <p className="text-gray-600 mt-1">
-                Monitoreo y seguimiento de casos que requieren atención especializada
+                Monitoreo y seguimiento de casos que requieren atención
+                especializada
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -279,7 +307,9 @@ export default function AdminAlertsPage() {
                   <div className="flex gap-2">
                     <select
                       value={statusFilter}
-                      onChange={(e) => setStatusFilter(e.target.value as AlertStatusFilter)}
+                      onChange={(e) =>
+                        setStatusFilter(e.target.value as AlertStatusFilter)
+                      }
                       className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
                       <option value="all">Todos los estados</option>
@@ -290,7 +320,9 @@ export default function AdminAlertsPage() {
                     </select>
                     <select
                       value={riskFilter}
-                      onChange={(e) => setRiskFilter(e.target.value as RiskLevelFilter)}
+                      onChange={(e) =>
+                        setRiskFilter(e.target.value as RiskLevelFilter)
+                      }
                       className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
                       <option value="all">Todos los riesgos</option>
@@ -344,13 +376,19 @@ export default function AdminAlertsPage() {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
-                      <label className="text-sm font-medium text-gray-700">Estudiante</label>
+                      <label className="text-sm font-medium text-gray-700">
+                        Estudiante
+                      </label>
                       <p className="text-gray-900">{selectedAlert.userName}</p>
-                      <p className="text-sm text-gray-600">{selectedAlert.userEmail}</p>
+                      <p className="text-sm text-gray-600">
+                        {selectedAlert.userEmail}
+                      </p>
                     </div>
 
                     <div>
-                      <label className="text-sm font-medium text-gray-700">Nivel de Riesgo</label>
+                      <label className="text-sm font-medium text-gray-700">
+                        Nivel de Riesgo
+                      </label>
                       <div className="flex items-center gap-2 mt-1">
                         <Badge className={getRiskColor(selectedAlert.level)}>
                           {getRiskLabel(selectedAlert.level)}
@@ -362,7 +400,9 @@ export default function AdminAlertsPage() {
                     </div>
 
                     <div>
-                      <label className="text-sm font-medium text-gray-700">Estado</label>
+                      <label className="text-sm font-medium text-gray-700">
+                        Estado
+                      </label>
                       <div className="flex items-center gap-2 mt-1">
                         {getStatusIcon(selectedAlert.status)}
                         <span>{getStatusLabel(selectedAlert.status)}</span>
@@ -370,28 +410,50 @@ export default function AdminAlertsPage() {
                     </div>
 
                     <div>
-                      <label className="text-sm font-medium text-gray-700">Fecha de Detección</label>
-                      <p className="text-gray-900">{formatDate(selectedAlert.createdAt)}</p>
-                      <p className="text-sm text-gray-600">{formatRelativeTime(selectedAlert.createdAt)}</p>
+                      <label className="text-sm font-medium text-gray-700">
+                        Fecha de Detección
+                      </label>
+                      <p className="text-gray-900">
+                        {formatDate(selectedAlert.createdAt)}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        {formatRelativeTime(selectedAlert.createdAt)}
+                      </p>
                     </div>
 
                     <div>
-                      <label className="text-sm font-medium text-gray-700">Fuente</label>
+                      <label className="text-sm font-medium text-gray-700">
+                        Fuente
+                      </label>
                       <div className="flex items-center gap-2 mt-1">
-                        {selectedAlert.source === 'post' && <MessageSquare className="h-4 w-4" />}
-                        {selectedAlert.source === 'diary' && <FileText className="h-4 w-4" />}
-                        <span className="capitalize">{selectedAlert.source}</span>
+                        {selectedAlert.source === "post" && (
+                          <MessageSquare className="h-4 w-4" />
+                        )}
+                        {selectedAlert.source === "diary" && (
+                          <FileText className="h-4 w-4" />
+                        )}
+                        <span className="capitalize">
+                          {selectedAlert.source}
+                        </span>
                       </div>
                     </div>
 
                     <div>
-                      <label className="text-sm font-medium text-gray-700">Palabras Clave Detectadas</label>
+                      <label className="text-sm font-medium text-gray-700">
+                        Palabras Clave Detectadas
+                      </label>
                       <div className="flex flex-wrap gap-1 mt-1">
-                        {selectedAlert.detectedKeywords.map((keyword, index) => (
-                          <Badge key={index} variant="secondary" className="text-xs">
-                            {keyword}
-                          </Badge>
-                        ))}
+                        {selectedAlert.detectedKeywords.map(
+                          (keyword, index) => (
+                            <Badge
+                              key={index}
+                              variant="secondary"
+                              className="text-xs"
+                            >
+                              {keyword}
+                            </Badge>
+                          )
+                        )}
                       </div>
                     </div>
                   </CardContent>
@@ -429,8 +491,10 @@ export default function AdminAlertsPage() {
                       variant="outline"
                       size="sm"
                       className="w-full justify-start"
-                      onClick={() => handleStatusUpdate(selectedAlert.id, 'in-progress')}
-                      disabled={selectedAlert.status === 'in-progress'}
+                      onClick={() =>
+                        handleStatusUpdate(selectedAlert.id, "in-progress")
+                      }
+                      disabled={selectedAlert.status === "in-progress"}
                     >
                       <Clock className="h-4 w-4 mr-2" />
                       Marcar en progreso
@@ -439,8 +503,10 @@ export default function AdminAlertsPage() {
                       variant="outline"
                       size="sm"
                       className="w-full justify-start"
-                      onClick={() => handleStatusUpdate(selectedAlert.id, 'resolved')}
-                      disabled={selectedAlert.status === 'resolved'}
+                      onClick={() =>
+                        handleStatusUpdate(selectedAlert.id, "resolved")
+                      }
+                      disabled={selectedAlert.status === "resolved"}
                     >
                       <CheckCircle className="h-4 w-4 mr-2" />
                       Marcar como resuelta
@@ -449,8 +515,10 @@ export default function AdminAlertsPage() {
                       variant="outline"
                       size="sm"
                       className="w-full justify-start"
-                      onClick={() => handleStatusUpdate(selectedAlert.id, 'false-positive')}
-                      disabled={selectedAlert.status === 'false-positive'}
+                      onClick={() =>
+                        handleStatusUpdate(selectedAlert.id, "false-positive")
+                      }
+                      disabled={selectedAlert.status === "false-positive"}
                     >
                       <XCircle className="h-4 w-4 mr-2" />
                       Falso positivo
@@ -467,18 +535,26 @@ export default function AdminAlertsPage() {
                     <CardContent>
                       <div className="space-y-3">
                         {selectedAlert.interventions.map((intervention) => (
-                          <div key={intervention.id} className="border-l-4 border-blue-500 pl-4 py-2">
+                          <div
+                            key={intervention.id}
+                            className="border-l-4 border-blue-500 pl-4 py-2"
+                          >
                             <div className="flex items-center gap-2 mb-1">
-                              <span className="font-medium text-gray-900">{intervention.description}</span>
+                              <span className="font-medium text-gray-900">
+                                {intervention.description}
+                              </span>
                               <Badge variant="outline" className="text-xs">
                                 {intervention.type}
                               </Badge>
                             </div>
                             <p className="text-xs text-gray-600">
-                              Por {intervention.performedBy} • {formatRelativeTime(intervention.performedAt)}
+                              Por {intervention.performedBy} •{" "}
+                              {formatRelativeTime(intervention.performedAt)}
                             </p>
                             {intervention.notes && (
-                              <p className="text-sm text-gray-700 mt-1">{intervention.notes}</p>
+                              <p className="text-sm text-gray-700 mt-1">
+                                {intervention.notes}
+                              </p>
                             )}
                           </div>
                         ))}
@@ -500,13 +576,22 @@ export default function AdminAlertsPage() {
                         </label>
                         <select
                           value={newIntervention.type}
-                          onChange={(e) => setNewIntervention({ ...newIntervention, type: e.target.value as Intervention['type'] })}
+                          onChange={(e) =>
+                            setNewIntervention({
+                              ...newIntervention,
+                              type: e.target.value as Intervention["type"],
+                            })
+                          }
                           className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                         >
                           <option value="message">Mensaje de apoyo</option>
                           <option value="meeting">Cita programada</option>
-                          <option value="referral">Referencia especializada</option>
-                          <option value="emergency">Intervención de emergencia</option>
+                          <option value="referral">
+                            Referencia especializada
+                          </option>
+                          <option value="emergency">
+                            Intervención de emergencia
+                          </option>
                           <option value="follow-up">Seguimiento</option>
                         </select>
                       </div>
@@ -518,7 +603,12 @@ export default function AdminAlertsPage() {
                         <Input
                           placeholder="Describe la intervención realizada"
                           value={newIntervention.description}
-                          onChange={(e) => setNewIntervention({ ...newIntervention, description: e.target.value })}
+                          onChange={(e) =>
+                            setNewIntervention({
+                              ...newIntervention,
+                              description: e.target.value,
+                            })
+                          }
                         />
                       </div>
 
@@ -529,7 +619,12 @@ export default function AdminAlertsPage() {
                         <Textarea
                           placeholder="Detalles adicionales sobre la intervención"
                           value={newIntervention.notes}
-                          onChange={(e) => setNewIntervention({ ...newIntervention, notes: e.target.value })}
+                          onChange={(e) =>
+                            setNewIntervention({
+                              ...newIntervention,
+                              notes: e.target.value,
+                            })
+                          }
                           className="min-h-[80px]"
                         />
                       </div>
@@ -571,52 +666,52 @@ export default function AdminAlertsPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-function AlertCard({ 
-  alert, 
-  isSelected, 
-  onClick, 
-  onStatusUpdate 
-}: { 
-  alert: RiskAlert
-  isSelected: boolean
-  onClick: () => void
-  onStatusUpdate: (alertId: string, status: RiskAlert['status']) => void
+function AlertCard({
+  alert,
+  isSelected,
+  onClick,
+  onStatusUpdate,
+}: {
+  alert: RiskAlert;
+  isSelected: boolean;
+  onClick: () => void;
+  onStatusUpdate: (alertId: string, status: RiskAlert["status"]) => void;
 }) {
-  const getStatusIcon = (status: RiskAlert['status']) => {
+  const getStatusIcon = (status: RiskAlert["status"]) => {
     switch (status) {
-      case 'new':
-        return <AlertCircle className="h-4 w-4 text-red-600" />
-      case 'in-progress':
-        return <Clock className="h-4 w-4 text-yellow-600" />
-      case 'resolved':
-        return <CheckCircle className="h-4 w-4 text-green-600" />
-      case 'false-positive':
-        return <XCircle className="h-4 w-4 text-gray-600" />
+      case "new":
+        return <AlertCircle className="h-4 w-4 text-red-600" />;
+      case "in-progress":
+        return <Clock className="h-4 w-4 text-yellow-600" />;
+      case "resolved":
+        return <CheckCircle className="h-4 w-4 text-green-600" />;
+      case "false-positive":
+        return <XCircle className="h-4 w-4 text-gray-600" />;
       default:
-        return <AlertCircle className="h-4 w-4 text-gray-600" />
+        return <AlertCircle className="h-4 w-4 text-gray-600" />;
     }
-  }
+  };
 
-  const getStatusLabel = (status: RiskAlert['status']) => {
+  const getStatusLabel = (status: RiskAlert["status"]) => {
     switch (status) {
-      case 'new':
-        return 'Nueva'
-      case 'in-progress':
-        return 'En progreso'
-      case 'resolved':
-        return 'Resuelta'
-      case 'false-positive':
-        return 'Falso positivo'
+      case "new":
+        return "Nueva";
+      case "in-progress":
+        return "En progreso";
+      case "resolved":
+        return "Resuelta";
+      case "false-positive":
+        return "Falso positivo";
       default:
-        return 'Desconocido'
+        return "Desconocido";
     }
-  }
+  };
 
   return (
-    <Card 
+    <Card
       className={cn(
         "cursor-pointer transition-all hover:shadow-md",
         isSelected && "ring-2 ring-blue-500 bg-blue-50"
@@ -627,20 +722,24 @@ function AlertCard({
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-2">
-              <span className="font-medium text-gray-900">{alert.userName}</span>
+              <span className="font-medium text-gray-900">
+                {alert.userName}
+              </span>
               <Badge className={getRiskColor(alert.level)}>
                 {getRiskLabel(alert.level)}
               </Badge>
               <div className="flex items-center gap-1">
                 {getStatusIcon(alert.status)}
-                <span className="text-xs text-gray-600">{getStatusLabel(alert.status)}</span>
+                <span className="text-xs text-gray-600">
+                  {getStatusLabel(alert.status)}
+                </span>
               </div>
             </div>
-            
+
             <p className="text-sm text-gray-700 line-clamp-2 mb-2">
               {alert.content.slice(0, 120)}...
             </p>
-            
+
             <div className="flex items-center gap-4 text-xs text-gray-500">
               <span>{formatRelativeTime(alert.createdAt)}</span>
               <span>Score: {(alert.score * 100).toFixed(1)}%</span>
@@ -650,15 +749,17 @@ function AlertCard({
               )}
             </div>
           </div>
-          
-          <div className={cn(
-            "w-4 h-4 rounded-full border-2",
-            alert.level === 'high' && "bg-red-500 border-red-500",
-            alert.level === 'medium' && "bg-yellow-500 border-yellow-500",
-            alert.level === 'low' && "bg-green-500 border-green-500"
-          )}></div>
+
+          <div
+            className={cn(
+              "w-4 h-4 rounded-full border-2",
+              alert.level === "high" && "bg-red-500 border-red-500",
+              alert.level === "medium" && "bg-yellow-500 border-yellow-500",
+              alert.level === "low" && "bg-green-500 border-green-500"
+            )}
+          ></div>
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

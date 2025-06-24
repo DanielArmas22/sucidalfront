@@ -1,18 +1,24 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { useAuth } from '@/contexts/AuthContext'
-import { mockUsers, mockApi } from '@/lib/mock-data'
-import { User, RiskAlert } from '@/types'
-import { formatDate, formatRelativeTime, cn } from '@/lib/utils'
-import { 
-  Users, 
-  Search, 
-  Filter, 
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/contexts/AuthContext";
+import { mockUsers, mockApi } from "@/lib/mock-data";
+import { User, RiskAlert } from "@/types";
+import { formatDate, formatRelativeTime, cn } from "@/lib/utils";
+import {
+  Users,
+  Search,
+  Filter,
   Eye,
   MessageCircle,
   BookOpen,
@@ -27,115 +33,122 @@ import {
   Shield,
   UserCheck,
   UserX,
-  Download
-} from 'lucide-react'
+  Download,
+} from "lucide-react";
 
 interface UserWithStats extends User {
-  postsCount: number
-  diaryEntriesCount: number
-  alertsCount: number
-  lastActivity: Date
-  riskLevel: 'low' | 'medium' | 'high'
+  postsCount: number;
+  diaryEntriesCount: number;
+  alertsCount: number;
+  lastActivity: Date;
+  riskLevel: "low" | "medium" | "high";
 }
 
 export default function AdminUsersPage() {
-  const { user } = useAuth()
-  const [users, setUsers] = useState<UserWithStats[]>([])
-  const [alerts, setAlerts] = useState<RiskAlert[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [facultyFilter, setFacultyFilter] = useState('all')
-  const [semesterFilter, setSemesterFilter] = useState('all')
-  const [riskFilter, setRiskFilter] = useState('all')
-  const [selectedUser, setSelectedUser] = useState<UserWithStats | null>(null)
+  const { user } = useAuth();
+  const [users, setUsers] = useState<UserWithStats[]>([]);
+  const [alerts, setAlerts] = useState<RiskAlert[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [facultyFilter, setFacultyFilter] = useState("all");
+  const [semesterFilter, setSemesterFilter] = useState("all");
+  const [riskFilter, setRiskFilter] = useState("all");
+  const [selectedUser, setSelectedUser] = useState<UserWithStats | null>(null);
 
   useEffect(() => {
-    loadUsers()
-  }, [])
+    loadUsers();
+  }, []);
 
   const loadUsers = async () => {
     try {
       // Cargar datos y crear estadísticas simuladas
-      const [alertsData] = await Promise.all([
-        mockApi.getRiskAlerts()
-      ])
-      
-      setAlerts(alertsData)
-      
+      const [alertsData] = await Promise.all([mockApi.getRiskAlerts()]);
+
+      setAlerts(alertsData);
+
       // Simular datos de usuarios con estadísticas
       const usersWithStats: UserWithStats[] = mockUsers
-        .filter(u => u.role === 'student')
-        .map(u => {
-          const userAlerts = alertsData.filter(a => a.userId === u.id)
-          const highRiskAlerts = userAlerts.filter(a => a.level === 'high')
-          const mediumRiskAlerts = userAlerts.filter(a => a.level === 'medium')
-          
-          let riskLevel: 'low' | 'medium' | 'high' = 'low'
-          if (highRiskAlerts.length > 0) riskLevel = 'high'
-          else if (mediumRiskAlerts.length > 1) riskLevel = 'medium'
-          
+        .filter((u) => u.role === "student")
+        .map((u) => {
+          const userAlerts = alertsData.filter((a) => a.userId === u.id);
+          const highRiskAlerts = userAlerts.filter((a) => a.level === "high");
+          const mediumRiskAlerts = userAlerts.filter(
+            (a) => a.level === "medium"
+          );
+
+          let riskLevel: "low" | "medium" | "high" = "low";
+          if (highRiskAlerts.length > 0) riskLevel = "high";
+          else if (mediumRiskAlerts.length > 1) riskLevel = "medium";
+
           return {
             ...u,
             postsCount: Math.floor(Math.random() * 20) + 1,
             diaryEntriesCount: Math.floor(Math.random() * 30) + 5,
             alertsCount: userAlerts.length,
-            lastActivity: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000),
-            riskLevel
-          }
-        })
-      
-      setUsers(usersWithStats)
-    } catch (error) {
-      console.error('Error loading users:', error)
-    } finally {
-      setIsLoading(false)
-    }
-  }
+            lastActivity: new Date(
+              Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000
+            ),
+            riskLevel,
+          };
+        });
 
-  const filteredUsers = users.filter(user => {
-    const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user.email.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesFaculty = facultyFilter === 'all' || user.faculty === facultyFilter
-    const matchesSemester = semesterFilter === 'all' || user.semester?.toString() === semesterFilter
-    const matchesRisk = riskFilter === 'all' || user.riskLevel === riskFilter
-    return matchesSearch && matchesFaculty && matchesSemester && matchesRisk
-  })
+      setUsers(usersWithStats);
+    } catch (error) {
+      console.error("Error loading users:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const filteredUsers = users.filter((user) => {
+    const matchesSearch =
+      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesFaculty =
+      facultyFilter === "all" || user.faculty === facultyFilter;
+    const matchesSemester =
+      semesterFilter === "all" || user.semester?.toString() === semesterFilter;
+    const matchesRisk = riskFilter === "all" || user.riskLevel === riskFilter;
+    return matchesSearch && matchesFaculty && matchesSemester && matchesRisk;
+  });
 
   const userStats = {
     total: users.length,
-    active: users.filter(u => {
-      const dayAgo = new Date()
-      dayAgo.setDate(dayAgo.getDate() - 1)
-      return u.lastActivity >= dayAgo
+    active: users.filter((u) => {
+      const dayAgo = new Date();
+      dayAgo.setDate(dayAgo.getDate() - 1);
+      return u.lastActivity >= dayAgo;
     }).length,
-    highRisk: users.filter(u => u.riskLevel === 'high').length,
-    mediumRisk: users.filter(u => u.riskLevel === 'medium').length
-  }
+    highRisk: users.filter((u) => u.riskLevel === "high").length,
+    mediumRisk: users.filter((u) => u.riskLevel === "medium").length,
+  };
 
-  const faculties = [...new Set(users.map(u => u.faculty).filter(Boolean))]
-  const semesters = [...new Set(users.map(u => u.semester).filter(Boolean))].sort()
+  const faculties = [...new Set(users.map((u) => u.faculty).filter(Boolean))];
+  const semesters = [
+    ...new Set(users.map((u) => u.semester).filter(Boolean)),
+  ].sort();
 
-  const getRiskColor = (level: 'low' | 'medium' | 'high') => {
+  const getRiskColor = (level: "low" | "medium" | "high") => {
     switch (level) {
-      case 'low':
-        return 'text-green-600 bg-green-50 border-green-200'
-      case 'medium':
-        return 'text-yellow-600 bg-yellow-50 border-yellow-200'
-      case 'high':
-        return 'text-red-600 bg-red-50 border-red-200'
+      case "low":
+        return "text-green-600 bg-green-50 border-green-200";
+      case "medium":
+        return "text-yellow-600 bg-yellow-50 border-yellow-200";
+      case "high":
+        return "text-red-600 bg-red-50 border-red-200";
     }
-  }
+  };
 
-  const getRiskLabel = (level: 'low' | 'medium' | 'high') => {
+  const getRiskLabel = (level: "low" | "medium" | "high") => {
     switch (level) {
-      case 'low':
-        return 'Bajo'
-      case 'medium':
-        return 'Medio'
-      case 'high':
-        return 'Alto'
+      case "low":
+        return "Bajo";
+      case "medium":
+        return "Medio";
+      case "high":
+        return "Alto";
     }
-  }
+  };
 
   if (isLoading) {
     return (
@@ -152,7 +165,7 @@ export default function AdminUsersPage() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -167,7 +180,8 @@ export default function AdminUsersPage() {
                 Gestión de Usuarios
               </h1>
               <p className="text-gray-600 mt-1">
-                Monitoreo y administración de estudiantes registrados en la plataforma
+                Monitoreo y administración de estudiantes registrados en la
+                plataforma
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -250,7 +264,7 @@ export default function AdminUsersPage() {
                       className="pl-10"
                     />
                   </div>
-                  
+
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <select
                       value={facultyFilter}
@@ -258,22 +272,26 @@ export default function AdminUsersPage() {
                       className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
                       <option value="all">Todas las facultades</option>
-                      {faculties.map(faculty => (
-                        <option key={faculty} value={faculty}>{faculty}</option>
+                      {faculties.map((faculty) => (
+                        <option key={faculty} value={faculty}>
+                          {faculty}
+                        </option>
                       ))}
                     </select>
-                    
+
                     <select
                       value={semesterFilter}
                       onChange={(e) => setSemesterFilter(e.target.value)}
                       className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     >
                       <option value="all">Todos los semestres</option>
-                      {semesters.map(semester => (
-                        <option key={semester} value={semester.toString()}>{semester}° Semestre</option>
+                      {semesters.map((semester) => (
+                        <option key={semester} value={semester.toString()}>
+                          {semester}° Semestre
+                        </option>
                       ))}
                     </select>
-                    
+
                     <select
                       value={riskFilter}
                       onChange={(e) => setRiskFilter(e.target.value)}
@@ -335,41 +353,59 @@ export default function AdminUsersPage() {
                         </span>
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-900">{selectedUser.name}</h3>
-                        <p className="text-sm text-gray-600">{selectedUser.email}</p>
+                        <h3 className="font-semibold text-gray-900">
+                          {selectedUser.name}
+                        </h3>
+                        <p className="text-sm text-gray-600">
+                          {selectedUser.email}
+                        </p>
                       </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
-                        <label className="font-medium text-gray-700">Facultad</label>
+                        <label className="font-medium text-gray-700">
+                          Facultad
+                        </label>
                         <div className="flex items-center gap-1 mt-1">
                           <GraduationCap className="h-4 w-4 text-gray-500" />
                           <span>{selectedUser.faculty}</span>
                         </div>
                       </div>
-                      
+
                       <div>
-                        <label className="font-medium text-gray-700">Semestre</label>
+                        <label className="font-medium text-gray-700">
+                          Semestre
+                        </label>
                         <div className="flex items-center gap-1 mt-1">
                           <Calendar className="h-4 w-4 text-gray-500" />
                           <span>{selectedUser.semester}°</span>
                         </div>
                       </div>
-                      
+
                       <div>
-                        <label className="font-medium text-gray-700">Registro</label>
-                        <p className="text-gray-600">{formatDate(selectedUser.createdAt)}</p>
+                        <label className="font-medium text-gray-700">
+                          Registro
+                        </label>
+                        <p className="text-gray-600">
+                          {formatDate(selectedUser.createdAt)}
+                        </p>
                       </div>
-                      
+
                       <div>
-                        <label className="font-medium text-gray-700">Última actividad</label>
-                        <p className="text-gray-600">{formatRelativeTime(selectedUser.lastActivity)}</p>
+                        <label className="font-medium text-gray-700">
+                          Última actividad
+                        </label>
+                        <p className="text-gray-600">
+                          {formatRelativeTime(selectedUser.lastActivity)}
+                        </p>
                       </div>
                     </div>
 
                     <div>
-                      <label className="font-medium text-gray-700">Nivel de Riesgo</label>
+                      <label className="font-medium text-gray-700">
+                        Nivel de Riesgo
+                      </label>
                       <div className="mt-1">
                         <Badge className={getRiskColor(selectedUser.riskLevel)}>
                           {getRiskLabel(selectedUser.riskLevel)}
@@ -391,34 +427,51 @@ export default function AdminUsersPage() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <MessageCircle className="h-4 w-4 text-blue-600" />
-                          <span className="text-sm text-gray-600">Publicaciones</span>
+                          <span className="text-sm text-gray-600">
+                            Publicaciones
+                          </span>
                         </div>
-                        <span className="font-semibold">{selectedUser.postsCount}</span>
+                        <span className="font-semibold">
+                          {selectedUser.postsCount}
+                        </span>
                       </div>
 
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <BookOpen className="h-4 w-4 text-purple-600" />
-                          <span className="text-sm text-gray-600">Entradas diario</span>
+                          <span className="text-sm text-gray-600">
+                            Entradas diario
+                          </span>
                         </div>
-                        <span className="font-semibold">{selectedUser.diaryEntriesCount}</span>
+                        <span className="font-semibold">
+                          {selectedUser.diaryEntriesCount}
+                        </span>
                       </div>
 
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <AlertTriangle className="h-4 w-4 text-red-600" />
-                          <span className="text-sm text-gray-600">Alertas generadas</span>
+                          <span className="text-sm text-gray-600">
+                            Alertas generadas
+                          </span>
                         </div>
-                        <span className="font-semibold">{selectedUser.alertsCount}</span>
+                        <span className="font-semibold">
+                          {selectedUser.alertsCount}
+                        </span>
                       </div>
 
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <TrendingUp className="h-4 w-4 text-green-600" />
-                          <span className="text-sm text-gray-600">Días activo</span>
+                          <span className="text-sm text-gray-600">
+                            Días activo
+                          </span>
                         </div>
                         <span className="font-semibold">
-                          {Math.floor((Date.now() - selectedUser.createdAt.getTime()) / (1000 * 60 * 60 * 24))}
+                          {Math.floor(
+                            (Date.now() - selectedUser.createdAt.getTime()) /
+                              (1000 * 60 * 60 * 24)
+                          )}
                         </span>
                       </div>
                     </div>
@@ -436,10 +489,13 @@ export default function AdminUsersPage() {
                     <CardContent>
                       <div className="space-y-3">
                         {alerts
-                          .filter(alert => alert.userId === selectedUser.id)
+                          .filter((alert) => alert.userId === selectedUser.id)
                           .slice(0, 3)
                           .map((alert) => (
-                            <div key={alert.id} className="border-l-4 border-red-500 pl-3 py-2">
+                            <div
+                              key={alert.id}
+                              className="border-l-4 border-red-500 pl-3 py-2"
+                            >
                               <div className="flex items-center gap-2 mb-1">
                                 <Badge className={getRiskColor(alert.level)}>
                                   {getRiskLabel(alert.level)}
@@ -463,19 +519,35 @@ export default function AdminUsersPage() {
                     <CardTitle>Acciones Administrativas</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-2">
-                    <Button variant="outline" size="sm" className="w-full justify-start">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full justify-start"
+                    >
                       <Mail className="h-4 w-4 mr-2" />
                       Enviar mensaje
                     </Button>
-                    <Button variant="outline" size="sm" className="w-full justify-start">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full justify-start"
+                    >
                       <Calendar className="h-4 w-4 mr-2" />
                       Programar cita
                     </Button>
-                    <Button variant="outline" size="sm" className="w-full justify-start">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full justify-start"
+                    >
                       <Download className="h-4 w-4 mr-2" />
                       Exportar historial
                     </Button>
-                    <Button variant="outline" size="sm" className="w-full justify-start text-red-600 hover:text-red-700">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full justify-start text-red-600 hover:text-red-700"
+                    >
                       <UserX className="h-4 w-4 mr-2" />
                       Suspender cuenta
                     </Button>
@@ -499,42 +571,42 @@ export default function AdminUsersPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-function UserCard({ 
-  user, 
-  isSelected, 
-  onClick 
-}: { 
-  user: UserWithStats
-  isSelected: boolean
-  onClick: () => void
+function UserCard({
+  user,
+  isSelected,
+  onClick,
+}: {
+  user: UserWithStats;
+  isSelected: boolean;
+  onClick: () => void;
 }) {
-  const getRiskColor = (level: 'low' | 'medium' | 'high') => {
+  const getRiskColor = (level: "low" | "medium" | "high") => {
     switch (level) {
-      case 'low':
-        return 'text-green-600 bg-green-50'
-      case 'medium':
-        return 'text-yellow-600 bg-yellow-50'
-      case 'high':
-        return 'text-red-600 bg-red-50'
+      case "low":
+        return "text-green-600 bg-green-50";
+      case "medium":
+        return "text-yellow-600 bg-yellow-50";
+      case "high":
+        return "text-red-600 bg-red-50";
     }
-  }
+  };
 
-  const getRiskLabel = (level: 'low' | 'medium' | 'high') => {
+  const getRiskLabel = (level: "low" | "medium" | "high") => {
     switch (level) {
-      case 'low':
-        return 'Bajo'
-      case 'medium':
-        return 'Medio'
-      case 'high':
-        return 'Alto'
+      case "low":
+        return "Bajo";
+      case "medium":
+        return "Medio";
+      case "high":
+        return "Alto";
     }
-  }
+  };
 
   return (
-    <Card 
+    <Card
       className={cn(
         "cursor-pointer transition-all hover:shadow-md",
         isSelected && "ring-2 ring-blue-500 bg-blue-50"
@@ -551,7 +623,9 @@ function UserCard({
             </div>
             <div>
               <h3 className="font-medium text-gray-900">{user.name}</h3>
-              <p className="text-sm text-gray-600">{user.faculty} • {user.semester}° semestre</p>
+              <p className="text-sm text-gray-600">
+                {user.faculty} • {user.semester}° semestre
+              </p>
               <div className="flex items-center gap-4 mt-1 text-xs text-gray-500">
                 <span>{user.postsCount} posts</span>
                 <span>{user.diaryEntriesCount} entradas</span>
@@ -559,7 +633,7 @@ function UserCard({
               </div>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <Badge className={getRiskColor(user.riskLevel)}>
               {getRiskLabel(user.riskLevel)}
@@ -573,5 +647,5 @@ function UserCard({
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }
