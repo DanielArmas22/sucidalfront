@@ -122,10 +122,11 @@ export default function AdminUsersPage() {
     highRisk: users.filter((u) => u.riskLevel === "high").length,
     mediumRisk: users.filter((u) => u.riskLevel === "medium").length,
   };
-
   const faculties = [...new Set(users.map((u) => u.faculty).filter(Boolean))];
   const semesters = [
-    ...new Set(users.map((u) => u.semester).filter(Boolean)),
+    ...new Set(
+      users.map((u) => u.semester).filter((s): s is number => s !== undefined)
+    ),
   ].sort();
 
   const getRiskColor = (level: "low" | "medium" | "high") => {
