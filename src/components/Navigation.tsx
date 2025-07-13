@@ -70,6 +70,12 @@ const adminNavItems = [
     description: "Monitoreo de riesgo y casos prioritarios",
   },
   {
+    label: "Mensajes",
+    href: "/admin/messages",
+    icon: MessageCircle,
+    description: "Análisis de mensajes de estudiantes",
+  },
+  {
     label: "Usuarios",
     href: "/admin/users",
     icon: Users,
@@ -131,7 +137,7 @@ export default function Navigation() {
               )}
               <div>
                 <h1 className="text-xl font-bold text-gray-900">
-                  {isAdmin ? "Panel Administrativo" : "Bienestar Estudiantil"}
+                  {isAdmin ? "Administrador" : "Bienestar Estudiantil"}
                 </h1>
                 <p className="text-sm text-gray-500">
                   {isAdmin ? "Sistema de Monitoreo" : "Espacio Seguro de Apoyo"}

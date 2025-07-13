@@ -65,19 +65,19 @@ export default function StudentProfilePage() {
     {
       type: "diary",
       title: "Nueva entrada en el diario",
-      date: new Date("2024-06-23T20:30:00"),
+      date: new Date("2025-06-23T20:30:00"),
       description: "Reflexiones sobre el progreso académico",
     },
     {
       type: "post",
       title: "Participación en el foro",
-      date: new Date("2024-06-22T15:45:00"),
+      date: new Date("2025-06-22T15:45:00"),
       description: "Compartiste consejos sobre manejo del estrés",
     },
     {
       type: "resource",
       title: "Recurso consultado",
-      date: new Date("2024-06-21T10:20:00"),
+      date: new Date("2025-06-21T10:20:00"),
       description: "Técnicas de respiración para la ansiedad",
     },
   ];

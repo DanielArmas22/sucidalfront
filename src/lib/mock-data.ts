@@ -18,7 +18,7 @@ export const mockUsers: User[] = [
     role: "student",
     faculty: "Ingeniería de Sistemas",
     semester: 6,
-    createdAt: new Date("2024-01-15"),
+    createdAt: new Date("2025-01-15"),
   },
   {
     id: "2",
@@ -27,7 +27,7 @@ export const mockUsers: User[] = [
     role: "student",
     faculty: "Ingeniería de Sistemas",
     semester: 8,
-    createdAt: new Date("2024-02-01"),
+    createdAt: new Date("2025-02-01"),
   },
   {
     id: "3",
@@ -48,20 +48,20 @@ export const mockPosts: Post[] = [
       "Hola a todos, estoy pasando por un momento muy difícil con los exámenes finales. Siento que no puedo más, he estado estudiando día y noche pero no logro concentrarme. A veces pienso que sería mejor rendirme. ¿Alguien más se siente así?",
     category: "estres-academico",
     isAnonymous: false,
-    createdAt: new Date("2024-06-20T10:30:00"),
-    updatedAt: new Date("2024-06-20T10:30:00"),
+    createdAt: new Date("2025-06-20T10:30:00"),
+    updatedAt: new Date("2025-06-20T10:30:00"),
     reactions: [
       {
         id: "1",
         userId: "2",
         type: "comprension",
-        createdAt: new Date("2024-06-20T11:00:00"),
+        createdAt: new Date("2025-06-20T11:00:00"),
       },
       {
         id: "2",
         userId: "3",
         type: "apoyo",
-        createdAt: new Date("2024-06-20T11:15:00"),
+        createdAt: new Date("2025-06-20T11:15:00"),
       },
     ],
     replies: [
@@ -73,13 +73,13 @@ export const mockPosts: Post[] = [
         content:
           "Ana, te entiendo completamente. Yo pasé por algo similar el semestre pasado. Lo importante es no rendirse. ¿Has probado técnicas de relajación?",
         isAnonymous: false,
-        createdAt: new Date("2024-06-20T11:30:00"),
+        createdAt: new Date("2025-06-20T11:30:00"),
         reactions: [
           {
             id: "3",
             userId: "1",
             type: "apoyo",
-            createdAt: new Date("2024-06-20T12:00:00"),
+            createdAt: new Date("2025-06-20T12:00:00"),
           },
         ],
       },
@@ -97,14 +97,14 @@ export const mockPosts: Post[] = [
       "Estoy buscando un compañero para el proyecto de tesis. Tengo algunas ideas sobre machine learning aplicado a la salud mental. Si alguien está interesado, podemos conversar.",
     category: "proyectos",
     isAnonymous: true,
-    createdAt: new Date("2024-06-21T14:20:00"),
-    updatedAt: new Date("2024-06-21T14:20:00"),
+    createdAt: new Date("2025-06-21T14:20:00"),
+    updatedAt: new Date("2025-06-21T14:20:00"),
     reactions: [
       {
         id: "4",
         userId: "1",
         type: "apoyo",
-        createdAt: new Date("2024-06-21T15:00:00"),
+        createdAt: new Date("2025-06-21T15:00:00"),
       },
     ],
     replies: [],
@@ -120,20 +120,20 @@ export const mockPosts: Post[] = [
       "No sé qué hacer con mi vida. Cada día es más difícil levantarme de la cama. Siento que soy una carga para mi familia y que nada tiene sentido. He pensado en terminar con todo esto. No veo salida a mis problemas.",
     category: "desahogo",
     isAnonymous: true,
-    createdAt: new Date("2024-06-22T09:15:00"),
-    updatedAt: new Date("2024-06-22T09:15:00"),
+    createdAt: new Date("2025-06-22T09:15:00"),
+    updatedAt: new Date("2025-06-22T09:15:00"),
     reactions: [
       {
         id: "5",
         userId: "2",
         type: "abrazo",
-        createdAt: new Date("2024-06-22T09:30:00"),
+        createdAt: new Date("2025-06-22T09:30:00"),
       },
       {
         id: "6",
         userId: "3",
         type: "apoyo",
-        createdAt: new Date("2024-06-22T09:45:00"),
+        createdAt: new Date("2025-06-22T09:45:00"),
       },
     ],
     replies: [
@@ -145,13 +145,13 @@ export const mockPosts: Post[] = [
         content:
           "Por favor, no estás solo. Hay personas que te quieren ayudar. Te recomiendo que contactes con el centro de bienestar estudiantil. Tu vida tiene valor.",
         isAnonymous: false,
-        createdAt: new Date("2024-06-22T10:00:00"),
+        createdAt: new Date("2025-06-22T10:00:00"),
         reactions: [
           {
             id: "7",
             userId: "1",
             type: "apoyo",
-            createdAt: new Date("2024-06-22T10:15:00"),
+            createdAt: new Date("2025-06-22T10:15:00"),
           },
         ],
       },
@@ -177,7 +177,7 @@ export const mockDiaryEntries: DiaryEntry[] = [
     content:
       "Hoy fue particularmente difícil. Me desperté sintiéndome vacía y sin energía. Durante las clases no pude concentrarme y constantemente pensaba en lo inútil que soy. Mis padres me llamaron y no pude decirles cómo me siento realmente.",
     mood: "muy-mal",
-    createdAt: new Date("2024-06-23T20:30:00"),
+    createdAt: new Date("2025-06-23T20:30:00"),
     riskLevel: "high",
     riskScore: 0.85,
     isPrivate: true,
@@ -189,7 +189,7 @@ export const mockDiaryEntries: DiaryEntry[] = [
     content:
       "Estuve pensando en qué haré después de graduarme. Aunque a veces me siento abrumado, creo que tengo buenas oportunidades por delante. El proyecto de tesis va bien y mi asesor está contento con mi progreso.",
     mood: "bien",
-    createdAt: new Date("2024-06-23T22:15:00"),
+    createdAt: new Date("2025-06-23T22:15:00"),
     riskLevel: "low",
     riskScore: 0.12,
     isPrivate: true,
@@ -214,7 +214,7 @@ export const mockRiskAlerts: RiskAlert[] = [
       "terminar con todo",
       "sin salida",
     ],
-    createdAt: new Date("2024-06-22T09:15:00"),
+    createdAt: new Date("2025-06-22T09:15:00"),
     status: "new",
     interventions: [],
   },
@@ -230,7 +230,7 @@ export const mockRiskAlerts: RiskAlert[] = [
     content:
       "Hoy fue particularmente difícil. Me desperté sintiéndome vacía y sin energía...",
     detectedKeywords: ["vacía", "sin energía", "inútil"],
-    createdAt: new Date("2024-06-23T20:30:00"),
+    createdAt: new Date("2025-06-23T20:30:00"),
     status: "new",
     interventions: [],
   },
@@ -246,10 +246,10 @@ export const mockRiskAlerts: RiskAlert[] = [
     content:
       "Siento que no puedo más, he estado estudiando día y noche pero no logro concentrarme...",
     detectedKeywords: ["no puedo más", "rendirme"],
-    createdAt: new Date("2024-06-20T10:30:00"),
+    createdAt: new Date("2025-06-20T10:30:00"),
     status: "in-progress",
     handledBy: "Dr. María Rodríguez",
-    handledAt: new Date("2024-06-20T15:00:00"),
+    handledAt: new Date("2025-06-20T15:00:00"),
     notes: "Contactada para sesión de apoyo. Mostró buena disposición.",
     interventions: [
       {
@@ -258,7 +258,7 @@ export const mockRiskAlerts: RiskAlert[] = [
         type: "message",
         description: "Mensaje de apoyo enviado",
         performedBy: "Dr. María Rodríguez",
-        performedAt: new Date("2024-06-20T15:00:00"),
+        performedAt: new Date("2025-06-20T15:00:00"),
         status: "completed",
       },
     ],
@@ -322,13 +322,13 @@ export const mockAnalytics: AnalyticsData = {
     high: 12,
   },
   trends: [
-    { date: "2024-06-17", alerts: 5, posts: 67, users: 234 },
-    { date: "2024-06-18", alerts: 8, posts: 89, users: 267 },
-    { date: "2024-06-19", alerts: 12, posts: 92, users: 289 },
-    { date: "2024-06-20", alerts: 15, posts: 78, users: 301 },
-    { date: "2024-06-21", alerts: 9, posts: 85, users: 298 },
-    { date: "2024-06-22", alerts: 18, posts: 94, users: 315 },
-    { date: "2024-06-23", alerts: 14, posts: 88, users: 324 },
+    { date: "2025-06-17", alerts: 5, posts: 67, users: 234 },
+    { date: "2025-06-18", alerts: 8, posts: 89, users: 267 },
+    { date: "2025-06-19", alerts: 12, posts: 92, users: 289 },
+    { date: "2025-06-20", alerts: 15, posts: 78, users: 301 },
+    { date: "2025-06-21", alerts: 9, posts: 85, users: 298 },
+    { date: "2025-06-22", alerts: 18, posts: 94, users: 315 },
+    { date: "2025-06-23", alerts: 14, posts: 88, users: 324 },
   ],
   topKeywords: [
     { word: "estrés", count: 45, riskLevel: "medium" },
