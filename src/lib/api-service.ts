@@ -138,17 +138,6 @@ class ApiService {
 
   // Health check
   async healthCheck() {
-    // For development, return mock health status
-    if (process.env.NODE_ENV === "development") {
-      await new Promise((resolve) => setTimeout(resolve, 300));
-      return {
-        status: "healthy",
-        model_loaded: true,
-        device: "cpu",
-        timestamp: new Date().toISOString(),
-      };
-    }
-
     return this.request<{
       status: string;
       model_loaded: boolean;
@@ -188,70 +177,8 @@ class ApiService {
   // Predict message risk
   async predictMessage(messageId: string, text: string) {
     // For development, return mock prediction
-    if (process.env.NODE_ENV === "development") {
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate processing time
 
-      // Simulate different risk levels based on content
-      const lowerText = text.toLowerCase();
-      const highRiskKeywords = [
-        "sin sentido",
-        "abrumada",
-        "no puedo",
-        "ayuda profesional",
-        "duele",
-      ];
-      const mediumRiskKeywords = [
-        "estresada",
-        "no encuentro motivación",
-        "sin ganas",
-      ];
-
-      const hasHighRisk = highRiskKeywords.some((keyword) =>
-        lowerText.includes(keyword)
-      );
-      const hasMediumRisk = mediumRiskKeywords.some((keyword) =>
-        lowerText.includes(keyword)
-      );
-
-      let riskLevel = "low";
-      let suicidalProb = 0.15;
-      let prediction = "non-suicidal";
-
-      if (hasHighRisk) {
-        riskLevel = "high";
-        suicidalProb = 0.82;
-        prediction = "suicidal";
-      } else if (hasMediumRisk) {
-        riskLevel = "medium";
-        suicidalProb = 0.64;
-        prediction = "suicidal";
-      }
-
-      return {
-        message_id: messageId,
-        original_text: text,
-        translated_text: text, // Assuming Spanish text doesn't need translation
-        prediction: prediction,
-        confidence: Math.max(suicidalProb, 1 - suicidalProb),
-        suicidal_probability: suicidalProb,
-        non_suicidal_probability: 1 - suicidalProb,
-        risk_level: riskLevel,
-        analysis: {
-          indicators_found: hasHighRisk
-            ? ["sin sentido", "abrumada"]
-            : hasMediumRisk
-            ? ["estresada"]
-            : [],
-          indicator_count: hasHighRisk ? 2 : hasMediumRisk ? 1 : 0,
-          first_person_count: (text.match(/\b(yo|me|mi|mí|mío|mía)\b/gi) || [])
-            .length,
-          text_length: text.length,
-          word_count: text.split(" ").length,
-        },
-      };
-    }
-
-    return this.request<PredictionResult>("/predict/message", {
+    return this.request<PredictionResult>("/predict/detailed", {
       method: "POST",
       body: JSON.stringify({
         message_id: messageId,
@@ -269,7 +196,7 @@ class ApiService {
       non_suicidal_probability: number;
       processed_text: string;
       risk_level: string;
-    }>("/predict", {
+    }>("/predict/detailed", {
       method: "POST",
       body: JSON.stringify({
         text: text,
