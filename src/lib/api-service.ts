@@ -12,13 +12,11 @@ export interface UserMessage {
 }
 
 export interface PredictionResult {
-  message_id: string;
-  original_text: string;
-  translated_text: string;
   prediction: string;
   confidence: number;
   suicidal_probability: number;
   non_suicidal_probability: number;
+  processed_text: string;
   risk_level: string;
   analysis: {
     indicators_found: string[];
@@ -27,6 +25,8 @@ export interface PredictionResult {
     text_length: number;
     word_count: number;
   };
+  original_text: string;
+  translated_text: string;
 }
 
 export interface ApiResponse<T> {
@@ -181,7 +181,6 @@ class ApiService {
     return this.request<PredictionResult>("/predict/detailed", {
       method: "POST",
       body: JSON.stringify({
-        message_id: messageId,
         text: text,
       }),
     });
@@ -189,14 +188,7 @@ class ApiService {
 
   // Basic text prediction
   async predictText(text: string) {
-    return this.request<{
-      prediction: string;
-      confidence: number;
-      suicidal_probability: number;
-      non_suicidal_probability: number;
-      processed_text: string;
-      risk_level: string;
-    }>("/predict/detailed", {
+    return this.request<PredictionResult>("/predict/detailed", {
       method: "POST",
       body: JSON.stringify({
         text: text,
@@ -206,15 +198,7 @@ class ApiService {
 
   // Detailed prediction
   async predictTextDetailed(text: string) {
-    return this.request<{
-      prediction: string;
-      confidence: number;
-      suicidal_probability: number;
-      non_suicidal_probability: number;
-      processed_text: string;
-      risk_level: string;
-      analysis: object;
-    }>("/predict/detailed", {
+    return this.request<PredictionResult>("/predict/detailed", {
       method: "POST",
       body: JSON.stringify({
         text: text,

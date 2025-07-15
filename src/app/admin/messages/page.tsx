@@ -89,6 +89,7 @@ export default function AdminMessagesPage() {
         message.id,
         message.content
       );
+      console.log("Prediction result:", result);
       setPredictionResult(result);
     } catch (error) {
       console.error("Error predicting message:", error);
@@ -460,10 +461,21 @@ export default function AdminMessagesPage() {
                         <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-300">
                           <div className="text-sm font-bold text-yellow-800 mb-3 flex items-center gap-2 uppercase tracking-wide">
                             <Languages className="h-4 w-4" />
-                            Texto Traducido
+                            Texto Original → Traducido
                           </div>
-                          <div className="text-base text-yellow-900 bg-white p-3 rounded border font-medium">
-                            {predictionResult.translated_text}
+                          <div className="space-y-2">
+                            <div className="text-sm text-yellow-800 font-semibold">
+                              Original:
+                            </div>
+                            <div className="text-base text-yellow-900 bg-yellow-100 p-3 rounded border font-medium">
+                              {predictionResult.original_text}
+                            </div>
+                            <div className="text-sm text-yellow-800 font-semibold">
+                              Traducido:
+                            </div>
+                            <div className="text-base text-yellow-900 bg-white p-3 rounded border font-medium">
+                              {predictionResult.translated_text}
+                            </div>
                           </div>
                         </div>
                       )}
@@ -500,9 +512,9 @@ export default function AdminMessagesPage() {
                           <div className="text-sm font-bold text-orange-800 mb-3 uppercase tracking-wide">
                             Análisis Detallado
                           </div>
-                          <div className="space-y-2 text-sm text-orange-900">
+                          <div className="space-y-3 text-sm text-orange-900">
                             <div className="flex justify-between font-semibold">
-                              <span>Indicadores:</span>
+                              <span>Indicadores de riesgo:</span>
                               <span className="text-lg">
                                 {predictionResult.analysis.indicator_count}
                               </span>
@@ -514,24 +526,42 @@ export default function AdminMessagesPage() {
                               </span>
                             </div>
                             <div className="flex justify-between font-semibold">
+                              <span>Longitud del texto:</span>
+                              <span className="text-lg">
+                                {predictionResult.analysis.text_length}{" "}
+                                caracteres
+                              </span>
+                            </div>
+                            <div className="flex justify-between font-semibold">
                               <span>Palabras totales:</span>
                               <span className="text-lg">
                                 {predictionResult.analysis.word_count}
                               </span>
                             </div>
+
+                            {/* Processed Text */}
+                            <div className="mt-4">
+                              <div className="text-sm font-bold text-orange-800 mb-2">
+                                Texto procesado para análisis:
+                              </div>
+                              <div className="text-base text-orange-900 bg-white p-3 rounded border font-medium italic">
+                                "{predictionResult.processed_text}"
+                              </div>
+                            </div>
+
                             {predictionResult.analysis.indicators_found.length >
                               0 && (
-                              <div className="mt-3">
+                              <div className="mt-4">
                                 <div className="font-bold mb-2">
-                                  Palabras clave detectadas:
+                                  Palabras clave de riesgo detectadas:
                                 </div>
-                                <div className="flex flex-wrap gap-1">
+                                <div className="flex flex-wrap gap-2">
                                   {predictionResult.analysis.indicators_found.map(
                                     (indicator, index) => (
                                       <Badge
                                         key={index}
                                         variant="outline"
-                                        className="text-xs bg-white border-orange-400 text-orange-800 font-semibold"
+                                        className="text-xs bg-red-100 border-red-400 text-red-800 font-semibold"
                                       >
                                         {indicator}
                                       </Badge>
