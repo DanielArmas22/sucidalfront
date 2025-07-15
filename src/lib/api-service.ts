@@ -1,5 +1,5 @@
 // API service for communicating with the backend
-const API_BASE_URL = "http://localhost:8000";
+const API_BASE_URL = process.env.BACKEND_API_URL || "http://localhost:8000";
 
 export interface UserMessage {
   id: string;
